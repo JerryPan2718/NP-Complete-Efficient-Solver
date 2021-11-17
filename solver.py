@@ -1,6 +1,7 @@
 from parse import read_input_file, write_output_file
 import os
 import random
+import math
 
 def solve(tasks):
     """
@@ -32,8 +33,20 @@ def solve(tasks):
     ## Genetic Algorithm
     def fitness(output_tasks, tasks):
         # print(1)
-        return sum([tasks[task-1].perfect_benefit for task in output_tasks[50:]]) # Dummy function
-        pass
+        MAX_TIME = 1440
+        time_cum = 0
+        benefit_cum = 0
+        idx = 0
+        while time_cum + tasks[idx].duration <= MAX_TIME:
+            id = output_tasks[idx] - 1
+            time_cum += tasks[id].duration
+            if time_cum <= tasks[id].deadline:
+                benefit_cum += tasks[id].perfect_benefit
+            else:
+                benefit_cum += tasks[id].perfect_benefit * math.exp(-0.0170 * (time_cum - tasks[id].deadline))
+            idx += 1
+        # print(benefit_cum)
+        return benefit_cum
 
     def mutate(output_tasks):
         n = len(output_tasks)
