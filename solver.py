@@ -1,5 +1,6 @@
 from parse import read_input_file, write_output_file
 import os
+import random
 
 def solve(tasks):
     """
@@ -11,7 +12,7 @@ def solve(tasks):
     ############################################## CONFIG ##############################################
     num_generations = 10000
     mutation_rate = 2
-    batch_size = 100
+    offspring_size = 1000
     keep_top_k = 100
     
     ####################################################################################################
@@ -30,26 +31,32 @@ def solve(tasks):
 
     ## Genetic Algorithm
     def fitness(output_tasks, tasks):
+        # print(1)
         return sum([tasks[task-1].perfect_benefit for task in output_tasks[50:]]) # Dummy function
         pass
 
     def mutate(output_tasks):
-        length_output_tasks = len(output_tasks)
+        n = len(output_tasks)
+        for mutation in range(mutation_rate):
+            i, j = random.randint(0, n-1), random.randint(0, n-1)
+            output_tasks[i], output_tasks[j] = output_tasks[j], output_tasks[i]
         return output_tasks
 
-    print(tasks)
-    print(fitness(initial_output_tasks, tasks))
+    # print(tasks)
+    # print(fitness(initial_output_tasks, tasks))
     rankedSolutions = [(initial_output_tasks, fitness(initial_output_tasks, tasks))]
     new_generation = []
     for i in range(num_generations):
-        for batch in range(batch_size):
-            for s in rankedSolutions:
+        for batch in range(offspring_size):
+            for idx, s in enumerate(rankedSolutions):
                 mutated_output_tasks = mutate(s[0])
                 new_generation.append((mutated_output_tasks, fitness(mutated_output_tasks, tasks)))
+        new_generation = new_generation + rankedSolutions
         new_generation.sort(key=lambda solution: -solution[1]) # Sort by the decreasing order of fitness
-
+        
         rankedSolutions = new_generation[:keep_top_k]
-        new_generation = []
+        # print(rankedSolutions)
+        new_generation = rankedSolutions.copy()
 
         print(f"=== Gen {i} best solutions with fitness {rankedSolutions[0]} ===") 
 
