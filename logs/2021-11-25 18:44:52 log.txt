@@ -1,0 +1,13 @@
+=== Gen 0 best solutions with fitness 3172.502773132884 and overall fitness 161647.90719787774 ===
+=== Gen 1 best solutions with fitness 3172.502773132884 and overall fitness 199408.12562344538 ===
+=== Gen 2 best solutions with fitness 3172.502773132884 and overall fitness 204700.37124657718 ===
+=== Gen 3 best solutions with fitness 3172.502773132884 and overall fitness 207617.22064297873 ===
+=== Gen 4 best solutions with fitness 3172.502773132884 and overall fitness 209162.38016534894 ===
+=== Gen 5 best solutions with fitness 3172.502773132884 and overall fitness 210016.6587107559 ===
+=== Gen 6 best solutions with fitness 3172.502773132884 and overall fitness 210730.78198000896 ===
+=== Gen 7 best solutions with fitness 3172.502773132884 and overall fitness 211584.85670635276 ===
+=== Gen 8 best solutions with fitness 3172.502773132884 and overall fitness 212488.96104187594 ===
+=== Gen 9 best solutions with fitness 3172.502773132884 and overall fitness 212800.2077604016 ===
+=== Gen 10 best solutions with fitness 3172.502773132884 and overall fitness 213579.39615338415 ===
+=== Gen 11 best solutions with fitness 3172.502773132884 and overall fitness 214185.23441813415 ===
+=== Gen 12 best solutions with fitness 3172.502773132884 and overall fitness 214948.6543888279 ===

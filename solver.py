@@ -86,8 +86,8 @@ def solve(tasks):
         rankedSolutions = new_generation[:keep_top_k]
         # print(rankedSolutions)
         new_generation = []
-
-        logging(f"=== Gen {i} best solutions with fitness {rankedSolutions[0][1]} ===")
+        rankedSolutions_fitness = sum([solutions[1] for solutions in rankedSolutions])
+        logging(f"=== Gen {i} best solutions with fitness {rankedSolutions[0][1]} and overall fitness {rankedSolutions_fitness} ===")
 
     return rankedSolutions[0]
 
