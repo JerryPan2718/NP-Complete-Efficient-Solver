@@ -1,0 +1,12 @@
+=== Gen 0 best solutions with fitness 3190.4015218122136 ===
+=== Gen 1 best solutions with fitness 3190.4015218122136 ===
+=== Gen 2 best solutions with fitness 3190.4015218122136 ===
+=== Gen 3 best solutions with fitness 3190.4015218122136 ===
+=== Gen 4 best solutions with fitness 3190.4015218122136 ===
+=== Gen 5 best solutions with fitness 3190.4015218122136 ===
+=== Gen 6 best solutions with fitness 3190.4015218122136 ===
+=== Gen 7 best solutions with fitness 3190.4015218122136 ===
+=== Gen 8 best solutions with fitness 3190.4015218122136 ===
+=== Gen 9 best solutions with fitness 3190.4015218122136 ===
+=== Gen 10 best solutions with fitness 3190.4015218122136 ===
+=== Gen 11 best solutions with fitness 3190.4015218122136 ===

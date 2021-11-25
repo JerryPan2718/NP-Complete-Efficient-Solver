@@ -1,0 +1,2 @@
+=== Gen 0 best solutions with fitness 3190.4015218122136 ===
+=== Gen 1 best solutions with fitness 3190.4015218122136 ===

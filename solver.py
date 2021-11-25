@@ -19,9 +19,9 @@ def solve(tasks):
     """
     ############################################## CONFIG ##############################################
     num_generations = 10000 # Doesn't matter
-    mutation_rate = 10 # Initially big then small
+    mutation_rate = 100 # Initially big then small
     offspring_size = 1000 # Big
-    keep_top_k = 1000 # Big
+    keep_top_k = 100 # Big
     
     ####################################################################################################
 
@@ -35,7 +35,7 @@ def solve(tasks):
     # print(len(tasks))
 
 
-    tasks_greedy = sorted(tasks, key = lambda task: (-task.perfect_benefit / task.duration, task.deadline))
+    tasks_greedy = sorted(tasks, key = lambda task: (round(-task.perfect_benefit / task.duration, 1), task.deadline))
     initial_output_tasks = [task.task_id for task in tasks_greedy]
     # initial_output_tasks = [i for i in range(100)]
 
