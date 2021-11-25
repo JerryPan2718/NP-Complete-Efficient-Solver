@@ -11,10 +11,10 @@ def solve(tasks):
         output: list of igloos in order of polishing  
     """
     ############################################## CONFIG ##############################################
-    num_generations = 10000
-    mutation_rate = 2
-    offspring_size = 1000
-    keep_top_k = 100
+    num_generations = 10000 # Doesn't matter
+    mutation_rate = 20 # Initially big then small
+    offspring_size = 10000 # Big
+    keep_top_k = 1000 # Big
     
     ####################################################################################################
 
@@ -26,8 +26,13 @@ def solve(tasks):
     # print(tasks[0])
     # print([task.task_id for task in tasks]) 
     # print(len(tasks))
+
+
     tasks_greedy = sorted(tasks, key = lambda task: (-task.perfect_benefit / task.duration, task.deadline))
     initial_output_tasks = [task.task_id for task in tasks_greedy]
+    # initial_output_tasks = [i for i in range(100)]
+
+
     # print([task.task_id for task in tasks_greedy]) 
 
     ## Genetic Algorithm
@@ -37,7 +42,7 @@ def solve(tasks):
         time_cum = 0
         benefit_cum = 0
         idx = 0
-        while time_cum + tasks[idx].duration <= MAX_TIME:
+        while time_cum + tasks[idx].duration <= MAX_TIME and idx < len(tasks):
             id = output_tasks[idx] - 1
             time_cum += tasks[id].duration
             if time_cum <= tasks[id].deadline:
@@ -45,6 +50,7 @@ def solve(tasks):
             else:
                 benefit_cum += tasks[id].perfect_benefit * math.exp(-0.0170 * (time_cum - tasks[id].deadline))
             idx += 1
+            # print(benefit_cum)
         # print(benefit_cum)
         return benefit_cum
 
@@ -65,13 +71,15 @@ def solve(tasks):
                 mutated_output_tasks = mutate(s[0])
                 new_generation.append((mutated_output_tasks, fitness(mutated_output_tasks, tasks)))
         new_generation = new_generation + rankedSolutions
+        # print(new_generation[0])
         new_generation.sort(key=lambda solution: -solution[1]) # Sort by the decreasing order of fitness
-        
+        # print(new_generation[0])
+
         rankedSolutions = new_generation[:keep_top_k]
         # print(rankedSolutions)
-        new_generation = rankedSolutions.copy()
+        new_generation = []
 
-        print(f"=== Gen {i} best solutions with fitness {rankedSolutions[0]} ===") 
+        print(f"=== Gen {i} best solutions with fitness {rankedSolutions[0][1]} ===") 
 
     return rankedSolutions[0]
 
