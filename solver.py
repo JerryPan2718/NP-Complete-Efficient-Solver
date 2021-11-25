@@ -12,8 +12,8 @@ def solve(tasks):
     """
     ############################################## CONFIG ##############################################
     num_generations = 10000 # Doesn't matter
-    mutation_rate = 20 # Initially big then small
-    offspring_size = 10000 # Big
+    mutation_rate = 10 # Initially big then small
+    offspring_size = 1000 # Big
     keep_top_k = 1000 # Big
     
     ####################################################################################################
@@ -56,8 +56,9 @@ def solve(tasks):
 
     def mutate(output_tasks):
         n = len(output_tasks)
-        for mutation in range(mutation_rate):
-            i, j = random.randint(0, n-1), random.randint(0, n-1)
+        mutation_num = random.randint(0, mutation_rate - 1)
+        for mutation in range(mutation_num):
+            i, j = random.randint(0, n - 1), random.randint(0, n - 1)
             output_tasks[i], output_tasks[j] = output_tasks[j], output_tasks[i]
         return output_tasks
 
