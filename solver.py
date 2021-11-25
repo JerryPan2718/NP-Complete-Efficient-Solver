@@ -87,8 +87,8 @@ def solve(tasks):
         # print(rankedSolutions)
         new_generation = []
 
-        print(f"=== Gen {i} best solutions with fitness {rankedSolutions[0][1]} ===") 
         logging(f"=== Gen {i} best solutions with fitness {rankedSolutions[0][1]} ===")
+        
     return rankedSolutions[0]
 
 
