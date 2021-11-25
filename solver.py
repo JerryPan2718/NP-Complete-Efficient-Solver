@@ -2,6 +2,13 @@ from parse import read_input_file, write_output_file
 import os
 import random
 import math
+from exp_utils import get_logger
+import datetime
+
+
+work_dir = "./logs"
+now = datetime.datetime.now()
+logging = get_logger(os.path.join(work_dir, now.strftime('%Y-%m-%d %H:%M:%S') + ' log.txt'))
 
 def solve(tasks):
     """
@@ -81,7 +88,7 @@ def solve(tasks):
         new_generation = []
 
         print(f"=== Gen {i} best solutions with fitness {rankedSolutions[0][1]} ===") 
-
+        logging(f"=== Gen {i} best solutions with fitness {rankedSolutions[0][1]} ===")
     return rankedSolutions[0]
 
 
