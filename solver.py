@@ -5,7 +5,7 @@ import math
 from exp_utils import get_logger
 import datetime
 
-
+random.seed(123)
 work_dir = "./logs"
 now = datetime.datetime.now()
 logging = get_logger(os.path.join(work_dir, now.strftime('%Y-%m-%d %H:%M:%S') + ' log.txt'))
@@ -88,7 +88,7 @@ def solve(tasks):
         new_generation = []
 
         logging(f"=== Gen {i} best solutions with fitness {rankedSolutions[0][1]} ===")
-        
+
     return rankedSolutions[0]
 
 
