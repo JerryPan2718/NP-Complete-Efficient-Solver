@@ -20,9 +20,9 @@ def solve(tasks):
         output: list of igloos in order of polishing  
     """
     ############################################## CONFIG ##############################################
-    num_generations = 1 # Doesn't matter
+    num_generations = 100 # Doesn't matter
     mutation_rate = 100 # Initially big then small
-    offspring_size = 1000 # Big
+    offspring_size = 100 # Big
     keep_top_k = 100 # Big
     
     ####################################################################################################
@@ -123,7 +123,7 @@ for inputs_category in inputs_categories:
         write_output_file(output_path, output)
         total_fitness = total_fitness + single_fitness
 
-logging(total_fitness)
+logging(str(total_fitness))
 
 # Here's an example of how to run your solver.
 # if __name__ == '__main__':
