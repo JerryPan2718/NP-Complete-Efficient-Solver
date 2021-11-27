@@ -1,0 +1,5 @@
+=== Gen 0 best solutions with fitness 3772.89336388142 and overall fitness 169389.5692433139 ===
+=== Gen 0 best solutions with fitness 3537.253511322609 and overall fitness 154090.45614423446 ===
+=== Gen 0 best solutions with fitness 1779.5733545240605 and overall fitness 64122.20942832484 ===
+=== Gen 0 best solutions with fitness 6510.04867870575 and overall fitness 403513.3344605717 ===
+=== Gen 0 best solutions with fitness 3785.5675276340817 and overall fitness 160562.6237508921 ===

@@ -18,7 +18,7 @@ def solve(tasks):
         output: list of igloos in order of polishing  
     """
     ############################################## CONFIG ##############################################
-    num_generations = 10000 # Doesn't matter
+    num_generations = 1 # Doesn't matter
     mutation_rate = 100 # Initially big then small
     offspring_size = 1000 # Big
     keep_top_k = 100 # Big
@@ -49,9 +49,9 @@ def solve(tasks):
         time_cum = 0
         benefit_cum = 0
         idx = 0
-        while time_cum + tasks[idx].duration <= MAX_TIME and idx < len(tasks):
+        while idx < len(tasks) and time_cum + tasks[output_tasks[idx] - 1].duration <= MAX_TIME:
             id = output_tasks[idx] - 1
-            time_cum += tasks[id].duration
+            time_cum = time_cum + tasks[id].duration
             if time_cum <= tasks[id].deadline:
                 benefit_cum += tasks[id].perfect_benefit
             else:
@@ -69,8 +69,23 @@ def solve(tasks):
             output_tasks[i], output_tasks[j] = output_tasks[j], output_tasks[i]
         return output_tasks
 
-    # print(tasks)
-    # print(fitness(initial_output_tasks, tasks))
+    def postprocessing(output_tasks, tasks):
+        idx = 0
+        MAX_TIME = 1440
+        time_cum = 0
+        processed_output_taskId = []
+        while idx < len(tasks) and time_cum + tasks[output_tasks[idx] - 1].duration <= MAX_TIME:
+            id = output_tasks[idx] - 1
+            time_cum = time_cum + tasks[id].duration
+            processed_output_taskId.append(tasks[id].task_id)
+            idx += 1
+        total_time = sum([tasks[taskId-1].duration for taskId in processed_output_taskId])
+        time_exceeded = total_time > 1440
+        # print(time_cum, total_time, time_exceeded)
+        # print(processed_output_taskId)
+        return processed_output_taskId
+
+    # Main
     rankedSolutions = [(initial_output_tasks, fitness(initial_output_tasks, tasks))]
     new_generation = []
     for i in range(num_generations):
@@ -79,27 +94,30 @@ def solve(tasks):
                 mutated_output_tasks = mutate(s[0])
                 new_generation.append((mutated_output_tasks, fitness(mutated_output_tasks, tasks)))
         new_generation = new_generation + rankedSolutions
-        # print(new_generation[0])
         new_generation.sort(key=lambda solution: -solution[1]) # Sort by the decreasing order of fitness
-        # print(new_generation[0])
 
         rankedSolutions = new_generation[:keep_top_k]
-        # print(rankedSolutions)
         new_generation = []
         rankedSolutions_fitness = sum([solutions[1] for solutions in rankedSolutions])
         logging(f"=== Gen {i} best solutions with fitness {rankedSolutions[0][1]} and overall fitness {rankedSolutions_fitness} ===")
 
-    return rankedSolutions[0]
+    task_order_for_output = postprocessing(rankedSolutions[0][0], tasks)
+    return task_order_for_output
 
+inputs_categories = ["large", "medium", "small"]
 
 print(os.listdir('inputs/'))
-for file_name in os.listdir('inputs/'):
-    input_path = 'inputs/' + file_name
-    print(input_path)
-    output_path = 'outputs/' + input_path[:-3] + '.out'
-    tasks = read_input_file(input_path)
-    output = solve(tasks)
-    
+for inputs_category in inputs_categories:
+    for file_name in os.listdir(os.path.join('inputs/', inputs_category)):
+        if file_name[0] == ".":
+            continue
+        input_path = 'inputs/' + inputs_category + "/" + file_name
+        print(input_path)
+        output_path = 'outputs/' + inputs_category + "/" + file_name[:-3] + '.out'
+        tasks = read_input_file(input_path)
+        output = solve(tasks)
+        print(output_path)
+        write_output_file(output_path, output)
 
 
 

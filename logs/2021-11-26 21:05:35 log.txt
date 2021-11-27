@@ -1,0 +1,1 @@
+=== Gen 0 best solutions with fitness 3772.89336388142 and overall fitness 169389.5692433139 ===

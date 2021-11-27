@@ -1,0 +1,9 @@
+=== Gen 0 best solutions with fitness 3772.89336388142 and overall fitness 169389.5692433139 ===
+=== Gen 0 best solutions with fitness 3537.253511322609 and overall fitness 154090.45614423446 ===
+=== Gen 0 best solutions with fitness 1779.5733545240605 and overall fitness 64122.20942832484 ===
+=== Gen 0 best solutions with fitness 6510.04867870575 and overall fitness 403513.3344605717 ===
+=== Gen 0 best solutions with fitness 3785.5675276340817 and overall fitness 160562.6237508921 ===
+=== Gen 0 best solutions with fitness 3434.104249329733 and overall fitness 158275.33263787127 ===
+=== Gen 0 best solutions with fitness 3793.1094149471865 and overall fitness 162654.62857937877 ===
+=== Gen 0 best solutions with fitness 3720.9373345286417 and overall fitness 167751.07452232623 ===
+=== Gen 0 best solutions with fitness 3904.782855996586 and overall fitness 157502.57735939254 ===

@@ -183,7 +183,6 @@ def write_output_file(path: str, task_ids):
     output_lines = []
 
     for task_id in task_ids:
-
         assert type(task_id) == int, 'task_id {} is invalid'.format(task_id)
         assert 1 <= task_id <= 200, 'task_id {} is invalid'.format(task_id)
 
