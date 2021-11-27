@@ -10,6 +10,8 @@ work_dir = "./logs"
 now = datetime.datetime.now()
 logging = get_logger(os.path.join(work_dir, now.strftime('%Y-%m-%d %H:%M:%S') + ' log.txt'))
 
+total_fitness = 0
+
 def solve(tasks):
     """
     Args:
@@ -100,9 +102,10 @@ def solve(tasks):
         new_generation = []
         rankedSolutions_fitness = sum([solutions[1] for solutions in rankedSolutions])
         logging(f"=== Gen {i} best solutions with fitness {rankedSolutions[0][1]} and overall fitness {rankedSolutions_fitness} ===")
-
+    
+    # total_fitness = total_fitness + rankedSolutions[0][1]
     task_order_for_output = postprocessing(rankedSolutions[0][0], tasks)
-    return task_order_for_output
+    return task_order_for_output, rankedSolutions[0][1]
 
 inputs_categories = ["large", "medium", "small"]
 
@@ -115,11 +118,12 @@ for inputs_category in inputs_categories:
         print(input_path)
         output_path = 'outputs/' + inputs_category + "/" + file_name[:-3] + '.out'
         tasks = read_input_file(input_path)
-        output = solve(tasks)
+        output, single_fitness = solve(tasks)
         print(output_path)
         write_output_file(output_path, output)
+        total_fitness = total_fitness + single_fitness
 
-
+logging(total_fitness)
 
 # Here's an example of how to run your solver.
 # if __name__ == '__main__':
