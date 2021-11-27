@@ -26,3 +26,9 @@ Algorithm Brainstorms:
 2. Use Greedy to early eliminate some Tasks, then use DP in the remaining Tasks. Possible subfunction: f(time_left, task_left).
 
 
+
+
+Replicate our algorithm for submission
+1. python3 solver.py
+2. python3 prepare_submission.py outputs/ submission.json
+3. Submit the submission.json to Gradescope
