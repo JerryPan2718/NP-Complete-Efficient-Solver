@@ -32,9 +32,13 @@ def solve(tasks):
     best_plan_benfit = float("-inf")
 
     ####################################################################################################
-    def calculate_probabilty_distribution(discounted_profit_tasks):
+    def calculate_probabilty_distribution_linear(discounted_profit_tasks):
         discounted_profit_tasks_sum = sum(discounted_profit_tasks)
         discounted_profit_proportion_tasks = [task_profit / discounted_profit_tasks_sum for task_profit in discounted_profit_tasks]
+        return discounted_profit_proportion_tasks
+
+    def calculate_probabilty_distribution_softmax(discounted_profit_tasks):
+        discounted_profit_proportion_tasks = np.exp(np.array(discounted_profit_tasks)) / np.sum(np.exp(np.array(discounted_profit_tasks)))
         return discounted_profit_proportion_tasks
     ####################################################################################################
     for _ in range(n_round):
@@ -56,7 +60,7 @@ def solve(tasks):
                     benefit = remaining_task.perfect_benefit * math.exp(-0.0170 * (time_cum - remaining_task.deadline))
                 discounted_profit_tasks.append(benefit)
             
-            tasks_probability_distribution = calculate_probabilty_distribution(discounted_profit_tasks)
+            tasks_probability_distribution = calculate_probabilty_distribution_softmax(discounted_profit_tasks)
             max_discounted_profit_task = np.random.choice(remaining_tasks, p=tasks_probability_distribution)
 
             output_tasks.append(max_discounted_profit_task.task_id)
