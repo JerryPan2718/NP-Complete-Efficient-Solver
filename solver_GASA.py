@@ -33,8 +33,8 @@ def solve(tasks):
 
     ####################################################################################################
     def calculate_probabilty_distribution(discounted_profit_tasks):
-        discounted_profit_tasks_sum = sum(discounted_profit_tasks)
-        discounted_profit_proportion_tasks = [task_profit / discounted_profit_tasks_sum for task_profit in discounted_profit_tasks]
+        
+        discounted_profit_proportion_tasks = np.exp(np.array(discounted_profit_tasks)) / np.sum(np.exp(np.array(discounted_profit_tasks)))
         return discounted_profit_proportion_tasks
     ####################################################################################################
     for _ in range(n_round):
