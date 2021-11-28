@@ -29,15 +29,27 @@ Algorithm Brainstorms:
     - i based on the ranking of sorted (profit/duration)
 - 1440 * (2 ** n)
 
-TODO:
-1. Greedy Discounted Profit (localGA)
+Experiments:
+1. Genetic Algorithm (solver_Genetic.py)
+- Initialize a reasonably good output using Greedy Algorithm, and then use Genetic Algorithm to optimize based on our reasonably good output
+- Takes almost infinite to run
+- total_benefit = NA
+
+2. Greedy on Sorted Rank of (profit/duration) (solver_sortGA.py)
+- solver_Genetic.py with num_generation = 0
+- Greedy sort by (profit/duration)
+- total_benefit = 2720696.426620777
+
+3. Greedy Discounted Profit (solver_localGA.py)
 - Greedy sort by profit and take until no more valid
 - total_benfit = 2719729.2186064925
 
-
-2. Greedy Discounted Profit with Simulated Annealing (GASA)
+4. Greedy Discounted Profit with Probability Distribution (solver_GAPD.py)
 - Greedy sort by profit with probability distribution and take until no more valid
-- total_benfit = 
+- (1) Linear (n_round=100)
+- total_benfit = 2166796.452501703
+- (2) Softmax (n_round=100)
+- total_benfit = 2660092.022518058
 
 
 Replicate our algorithm for submission

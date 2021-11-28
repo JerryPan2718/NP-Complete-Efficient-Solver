@@ -20,7 +20,7 @@ def solve(tasks):
         output: list of igloos in order of polishing  
     """
     ############################################## CONFIG ##############################################
-    num_generations = 0 # Doesn't matter
+    num_generations = 100 # Doesn't matter
     mutation_rate = 100 # Initially big then small
     offspring_size = 100 # Big
     keep_top_k = 100 # Big
