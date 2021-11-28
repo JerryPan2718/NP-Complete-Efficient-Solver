@@ -99,12 +99,12 @@ for inputs_category in inputs_categories:
         if file_name[0] == ".":
             continue
         input_path = 'inputs/' + inputs_category + "/" + file_name
-        # print(input_path)
+        print(input_path)
         output_path = 'outputs/' + inputs_category + "/" + file_name[:-3] + '.out'
         tasks = read_input_file(input_path)
         output, benefit = solve(tasks, input_path)
         total_benefit = total_benefit + benefit
-        # print(output_path)
+        print(output_path)
         write_output_file(output_path, output)
 
 logging(str(total_benefit))
