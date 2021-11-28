@@ -23,8 +23,17 @@ Algorithm Brainstorms:
 
 
 
-2. Use Greedy to early eliminate some Tasks, then use DP in the remaining Tasks. Possible subfunction: f(time_left, task_left).
+2. Use Greedy to early eliminate some Tasks, then use DP in the remaining Tasks. 
+- subfunction: f(time_left, task_left).
+- relation: f(time_left, task_left) = f(time_left - task_i.duration, task_left - task_i) + task_i.discountedProfit 
+    - i based on the ranking of sorted (profit/duration)
+- 1440 * (2 ** n)
 
+TODO:
+1. Greedy Discounted Profit (Tinna + Jerry: Nov. 28th)
+- Greedy sort by profit and take until no more valid
+
+2. Greedy Discounted Profit with Simulated Annealing (Tinna + Jerry: Nov. 28th)
 
 
 
