@@ -1,4 +1,5 @@
-for i in {1..5}
+for i in {1..1800}
 do
-   python3 solver_GAPD.py
+    echo Iteration $i
+    python3 solver_GAPD.py
 done
