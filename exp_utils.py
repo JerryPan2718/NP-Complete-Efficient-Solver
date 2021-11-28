@@ -1,7 +1,7 @@
 import functools
 import os, shutil
 import numpy as np
-import torch
+# import torch
 
 def logging(s, log_path, print_=True, log_=True):
     if print_:
@@ -32,6 +32,6 @@ def create_exp_dir(dir_path, scripts_to_save=None, debug=False):
 
     return get_logger(log_path=os.path.join(dir_path, 'log.txt'))
 
-def save_checkpoint(model, optimizer, path, epoch):
-    torch.save(model, os.path.join(path, 'model_{}.pt'.format(epoch)))
-    torch.save(optimizer.state_dict(), os.path.join(path, 'optimizer_{}.pt'.format(epoch)))
+# def save_checkpoint(model, optimizer, path, epoch):
+#     torch.save(model, os.path.join(path, 'model_{}.pt'.format(epoch)))
+#     torch.save(optimizer.state_dict(), os.path.join(path, 'optimizer_{}.pt'.format(epoch)))
