@@ -23,8 +23,7 @@ def solve(tasks):
     
     
     ####################################################################################################
-    def calculate(tasks):
-        
+
 
     output_tasks = []
     remaining_tasks = tasks[:]
@@ -32,103 +31,29 @@ def solve(tasks):
     time_cum = 0
     benefit_cum = 0
     MAX_TIME = 1440
-    while idx < len(tasks) and time_cum + XXX.duration < MAX_TIME:
+    while remaining_tasks and time_cum <= MAX_TIME:
         discounted_profit_tasks = []
+        remaining_tasks = [task for task in remaining_tasks if task.duration + time_cum <= MAX_TIME]
         for i in range(len(remaining_tasks)):
             remaining_task = remaining_tasks[i]
             if time_cum <= remaining_task.deadline:
-                benefit_cum += remaining_task.perfect_benefit
+                benefit = remaining_task.perfect_benefit
             else:
-                benefit_cum += remaining_task.perfect_benefit * math.exp(-0.0170 * (time_cum - tasks[id].deadline))
-            discounted_profit_tasks.append(benefit_cum)
+                benefit = remaining_task.perfect_benefit * math.exp(-0.0170 * (time_cum - remaining_task.deadline))
+            discounted_profit_tasks.append(benefit)
         
-        max_discounted_profit, max_discounted_profit_task_todo = [() for task in remaining_tasks if max(discounted_profit_tasks)]
-
-        taskID_todo = argmax(tasks[id].perfect_benefit * math.exp(-0.0170 * (time_cum - tasks[id].deadline)))
-        
-
+        max_discounted_profit = max(discounted_profit_tasks)
+        max_discounted_profit_taskId = discounted_profit_tasks.index(max_discounted_profit)
+        max_discounted_profit_task = remaining_tasks[max_discounted_profit_taskId]
 
 
+        output_tasks.append(max_discounted_profit_task.task_id)
+        time_cum += max_discounted_profit_task.duration
+        benefit_cum += max_discounted_profit
 
-    # print(tasks)
-    # Greedy Algorithm as the initial genome for Genetic Algorithm
-    # 4 Attributes of Task:         
-    # task_id, deadline, duration, perfect_benefit
+        remaining_tasks.remove(max_discounted_profit_task)
+    return output_tasks
 
-    # print(tasks[0])
-    # print([task.task_id for task in tasks]) 
-    # print(len(tasks))
-
-
-    tasks_greedy = sorted(tasks, key = lambda task: (round(-task.perfect_benefit / task.duration, 1), task.deadline))
-    initial_output_tasks = [task.task_id for task in tasks_greedy]
-    # initial_output_tasks = [i for i in range(100)]
-
-
-    # print([task.task_id for task in tasks_greedy]) 
-
-    ## Genetic Algorithm
-    def fitness(output_tasks, tasks):
-        # print(1)
-        MAX_TIME = 1440
-        time_cum = 0
-        benefit_cum = 0
-        idx = 0
-        while idx < len(tasks) and time_cum + tasks[output_tasks[idx] - 1].duration <= MAX_TIME:
-            id = output_tasks[idx] - 1
-            time_cum = time_cum + tasks[id].duration
-            if time_cum <= tasks[id].deadline:
-                benefit_cum += tasks[id].perfect_benefit
-            else:
-                benefit_cum += tasks[id].perfect_benefit * math.exp(-0.0170 * (time_cum - tasks[id].deadline))
-            idx += 1
-            # print(benefit_cum)
-        # print(benefit_cum)
-        return benefit_cum
-
-    def mutate(output_tasks):
-        n = len(output_tasks)
-        mutation_num = random.randint(0, mutation_rate - 1)
-        for mutation in range(mutation_num):
-            i, j = random.randint(0, n - 1), random.randint(0, n - 1)
-            output_tasks[i], output_tasks[j] = output_tasks[j], output_tasks[i]
-        return output_tasks
-
-    def postprocessing(output_tasks, tasks):
-        idx = 0
-        MAX_TIME = 1440
-        time_cum = 0
-        processed_output_taskId = []
-        while idx < len(tasks) and time_cum + tasks[output_tasks[idx] - 1].duration <= MAX_TIME:
-            id = output_tasks[idx] - 1
-            time_cum = time_cum + tasks[id].duration
-            processed_output_taskId.append(tasks[id].task_id)
-            idx += 1
-        total_time = sum([tasks[taskId-1].duration for taskId in processed_output_taskId])
-        time_exceeded = total_time > 1440
-        # print(time_cum, total_time, time_exceeded)
-        # print(processed_output_taskId)
-        return processed_output_taskId
-
-    # Main
-    rankedSolutions = [(initial_output_tasks, fitness(initial_output_tasks, tasks))]
-    new_generation = []
-    for i in range(num_generations):
-        for batch in range(offspring_size):
-            for idx, s in enumerate(rankedSolutions):
-                mutated_output_tasks = mutate(s[0])
-                new_generation.append((mutated_output_tasks, fitness(mutated_output_tasks, tasks)))
-        new_generation = new_generation + rankedSolutions
-        new_generation.sort(key=lambda solution: -solution[1]) # Sort by the decreasing order of fitness
-
-        rankedSolutions = new_generation[:keep_top_k]
-        new_generation = []
-        rankedSolutions_fitness = sum([solutions[1] for solutions in rankedSolutions])
-        logging(f"=== Gen {i} best solutions with fitness {rankedSolutions[0][1]} and overall fitness {rankedSolutions_fitness} ===")
-    
-    # total_fitness = total_fitness + rankedSolutions[0][1]
-    task_order_for_output = postprocessing(rankedSolutions[0][0], tasks)
-    return task_order_for_output, rankedSolutions[0][1]
 
 inputs_categories = ["large", "medium", "small"]
 
