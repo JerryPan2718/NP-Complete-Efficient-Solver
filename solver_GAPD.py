@@ -21,10 +21,7 @@ def solve(tasks, input_path):
     Returns:
         output: list of igloos in order of polishing  
     """
-    ############################################## CONFIG ##############################################
-    
-    
-    ####################################################################################################
+    ############################################## CONFIG ##############################################    
     global opt_dict
     MAX_TIME = 1440
     n_round = 1
@@ -46,6 +43,44 @@ def solve(tasks, input_path):
     def calculate_probabilty_distribution_random(discounted_profit_tasks):
         n = len(discounted_profit_tasks)
         return [1/n for _ in range(n)]
+
+    def calculate_probabilty_distribution_linear_activation(discounted_profit_tasks):
+        discounted_profit_tasks_mean = np.mean(discounted_profit_tasks)
+        discounted_profit_proportion_tasks = []
+        for task_profit in discounted_profit_tasks:
+            if task_profit >= discounted_profit_tasks_mean:
+                discounted_profit_proportion_tasks.append(task_profit)
+            else:
+                discounted_profit_proportion_tasks.append(0)
+        
+        # discounted_profit_proportion_tasks = np.array(discounted_profit_proportion_tasks) / np.sum(np.array(discounted_profit_proportion_tasks))
+        discounted_profit_tasks_sum = sum(discounted_profit_tasks)
+        if discounted_profit_tasks_sum != 0:
+            discounted_profit_proportion_tasks = [task_profit / discounted_profit_tasks_sum for task_profit in discounted_profit_tasks]
+        else:
+            discounted_profit_proportion_tasks = [1/len(discounted_profit_tasks) for _ in range(len(discounted_profit_tasks))]
+            # print(sum(discounted_profit_proportion_tasks))
+        return discounted_profit_proportion_tasks
+
+    def calculate_probabilty_distribution_softmax_activation(discounted_profit_tasks):
+        discounted_profit_tasks_mean = np.mean(discounted_profit_tasks)
+        discounted_profit_proportion_tasks = []
+        for task_profit in discounted_profit_tasks:
+            if task_profit >= discounted_profit_tasks_mean:
+                discounted_profit_proportion_tasks.append(task_profit)
+            else:
+                discounted_profit_proportion_tasks.append(0)
+        
+        # discounted_profit_proportion_tasks = np.array(discounted_profit_proportion_tasks) / np.sum(np.array(discounted_profit_proportion_tasks))
+        discounted_profit_tasks_sum = sum(discounted_profit_tasks)
+        if discounted_profit_tasks_sum != 0:
+            discounted_profit_proportion_tasks = [task_profit / discounted_profit_tasks_sum for task_profit in discounted_profit_tasks]
+        else:
+            discounted_profit_proportion_tasks = [1/len(discounted_profit_tasks) for _ in range(len(discounted_profit_tasks))]
+
+        discounted_profit_proportion_tasks = np.array(discounted_profit_proportion_tasks) / np.sum(np.array(discounted_profit_proportion_tasks))
+        # print(sum(discounted_profit_proportion_tasks))
+        return discounted_profit_proportion_tasks
     ####################################################################################################
     for _ in range(n_round):
         output_tasks = []
@@ -66,7 +101,7 @@ def solve(tasks, input_path):
                     benefit = remaining_task.perfect_benefit * math.exp(-0.0170 * (time_cum - remaining_task.deadline))
                 discounted_profit_tasks.append(benefit)
             
-            tasks_probability_distribution = calculate_probabilty_distribution_softmax(discounted_profit_tasks)
+            tasks_probability_distribution = calculate_probabilty_distribution_softmax_activation(discounted_profit_tasks)
             max_discounted_profit_task = np.random.choice(remaining_tasks, p=tasks_probability_distribution)
 
             output_tasks.append(max_discounted_profit_task.task_id)
