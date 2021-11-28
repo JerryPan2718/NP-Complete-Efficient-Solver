@@ -30,11 +30,14 @@ Algorithm Brainstorms:
 - 1440 * (2 ** n)
 
 TODO:
-1. Greedy Discounted Profit (Tinna + Jerry: Nov. 28th)
+1. Greedy Discounted Profit (localGA)
 - Greedy sort by profit and take until no more valid
+- total_benfit = 2719729.2186064925
 
-2. Greedy Discounted Profit with Simulated Annealing (Tinna + Jerry: Nov. 28th)
 
+2. Greedy Discounted Profit with Simulated Annealing (GASA)
+- Greedy sort by profit with probability distribution and take until no more valid
+- total_benfit = 
 
 
 Replicate our algorithm for submission
