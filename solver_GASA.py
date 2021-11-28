@@ -10,7 +10,7 @@ work_dir = "./logs"
 now = datetime.datetime.now()
 logging = get_logger(os.path.join(work_dir, now.strftime('%Y-%m-%d %H:%M:%S') + ' log.txt'))
 
-total_fitness = 0
+total_benefit = 0
 
 def solve(tasks):
     """
@@ -34,6 +34,8 @@ def solve(tasks):
     while remaining_tasks and time_cum <= MAX_TIME:
         discounted_profit_tasks = []
         remaining_tasks = [task for task in remaining_tasks if task.duration + time_cum <= MAX_TIME]
+        if not remaining_tasks:
+            break
         for i in range(len(remaining_tasks)):
             remaining_task = remaining_tasks[i]
             if time_cum <= remaining_task.deadline:
@@ -52,7 +54,7 @@ def solve(tasks):
         benefit_cum += max_discounted_profit
 
         remaining_tasks.remove(max_discounted_profit_task)
-    return output_tasks
+    return output_tasks, benefit_cum
 
 
 inputs_categories = ["large", "medium", "small"]
@@ -66,12 +68,12 @@ for inputs_category in inputs_categories:
         print(input_path)
         output_path = 'outputs/' + inputs_category + "/" + file_name[:-3] + '.out'
         tasks = read_input_file(input_path)
-        output, single_fitness = solve(tasks)
+        output, benefit = solve(tasks)
+        total_benefit = total_benefit + benefit
         print(output_path)
         write_output_file(output_path, output)
-        total_fitness = total_fitness + single_fitness
 
-logging(str(total_fitness))
+logging(str(total_benefit))
 
 # Here's an example of how to run your solver.
 # if __name__ == '__main__':
