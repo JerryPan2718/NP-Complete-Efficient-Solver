@@ -46,9 +46,9 @@ Experiments:
 
 4. Greedy Discounted Profit with Probability Distribution (solver_GAPD.py)
 - Greedy sort by profit with probability distribution and take until no more valid
-- (1) Linear (n_round=100) (solver_GAPD_linear.py)
+- (1) Linear (n_round=100)
 - total_benfit = 2166796.452501703
-- (2) Softmax (n_round=100) (solver_GAPD_softmax.py)
+- (2) Softmax (n_round=100)
 - total_benfit = 2660092.022518058
 
 
