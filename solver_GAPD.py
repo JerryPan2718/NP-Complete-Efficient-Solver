@@ -7,7 +7,7 @@ import datetime
 import numpy as np
 import pickle
 
-random.seed(123)
+# random.seed(123)
 work_dir = "./logs"
 now = datetime.datetime.now()
 logging = get_logger(os.path.join(work_dir, now.strftime('%Y-%m-%d %H:%M:%S') + ' log.txt'))
@@ -27,7 +27,7 @@ def solve(tasks, input_path):
     ####################################################################################################
     global opt_dict
     MAX_TIME = 1440
-    n_round = 100
+    n_round = 1
     opt = opt_dict.get(input_path, [None, float('-inf')])
     best_plan = opt[0]
     best_plan_benfit = opt[1]
@@ -42,6 +42,10 @@ def solve(tasks, input_path):
     def calculate_probabilty_distribution_softmax(discounted_profit_tasks):
         discounted_profit_proportion_tasks = np.exp(np.array(discounted_profit_tasks)) / np.sum(np.exp(np.array(discounted_profit_tasks)))
         return discounted_profit_proportion_tasks
+
+    def calculate_probabilty_distribution_random(discounted_profit_tasks):
+        n = len(discounted_profit_tasks)
+        return [1/n for _ in range(n)]
     ####################################################################################################
     for _ in range(n_round):
         output_tasks = []
@@ -62,7 +66,7 @@ def solve(tasks, input_path):
                     benefit = remaining_task.perfect_benefit * math.exp(-0.0170 * (time_cum - remaining_task.deadline))
                 discounted_profit_tasks.append(benefit)
             
-            tasks_probability_distribution = calculate_probabilty_distribution_softmax(discounted_profit_tasks)
+            tasks_probability_distribution = calculate_probabilty_distribution_random(discounted_profit_tasks)
             max_discounted_profit_task = np.random.choice(remaining_tasks, p=tasks_probability_distribution)
 
             output_tasks.append(max_discounted_profit_task.task_id)
@@ -99,12 +103,12 @@ for inputs_category in inputs_categories:
         if file_name[0] == ".":
             continue
         input_path = 'inputs/' + inputs_category + "/" + file_name
-        print(input_path)
+        # print(input_path)
         output_path = 'outputs/' + inputs_category + "/" + file_name[:-3] + '.out'
         tasks = read_input_file(input_path)
         output, benefit = solve(tasks, input_path)
         total_benefit = total_benefit + benefit
-        print(output_path)
+        # print(output_path)
         write_output_file(output_path, output)
 
 logging(str(total_benefit))
