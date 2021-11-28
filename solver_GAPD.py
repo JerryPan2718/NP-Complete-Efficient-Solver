@@ -42,6 +42,10 @@ def solve(tasks, input_path):
     def calculate_probabilty_distribution_softmax(discounted_profit_tasks):
         discounted_profit_proportion_tasks = np.exp(np.array(discounted_profit_tasks)) / np.sum(np.exp(np.array(discounted_profit_tasks)))
         return discounted_profit_proportion_tasks
+
+    def calculate_probabilty_distribution_random(discounted_profit_tasks):
+        n = len(discounted_profit_tasks)
+        return [1/n for _ in range(n)]
     ####################################################################################################
     for _ in range(n_round):
         output_tasks = []
