@@ -4,6 +4,7 @@ import random
 import math
 from exp_utils import get_logger
 import datetime
+import numpy as np
 
 random.seed(123)
 work_dir = "./logs"
@@ -25,36 +26,53 @@ def solve(tasks):
     ####################################################################################################
 
 
-    output_tasks = []
-    remaining_tasks = tasks[:]
-    idx = 0
-    time_cum = 0
-    benefit_cum = 0
     MAX_TIME = 1440
-    while remaining_tasks and time_cum <= MAX_TIME:
-        discounted_profit_tasks = []
-        remaining_tasks = [task for task in remaining_tasks if task.duration + time_cum <= MAX_TIME]
-        if not remaining_tasks:
-            break
-        for i in range(len(remaining_tasks)):
-            remaining_task = remaining_tasks[i]
-            if time_cum <= remaining_task.deadline:
-                benefit = remaining_task.perfect_benefit
+    n_round = 100
+    best_plan = None
+    best_plan_benfit = float("-inf")
+
+    ####################################################################################################
+    def calculate_probabilty_distribution(discounted_profit_tasks):
+        discounted_profit_tasks_sum = sum(discounted_profit_tasks)
+        discounted_profit_proportion_tasks = [task_profit / discounted_profit_tasks_sum for task_profit in discounted_profit_tasks]
+        return discounted_profit_proportion_tasks
+    ####################################################################################################
+    for _ in range(n_round):
+        output_tasks = []
+        remaining_tasks = tasks[:]
+        idx = 0
+        time_cum = 0
+        benefit_cum = 0
+        while remaining_tasks and time_cum <= MAX_TIME:
+            discounted_profit_tasks = []
+            remaining_tasks = [task for task in remaining_tasks if task.duration + time_cum <= MAX_TIME]
+            if not remaining_tasks:
+                break
+            for i in range(len(remaining_tasks)):
+                remaining_task = remaining_tasks[i]
+                if time_cum <= remaining_task.deadline:
+                    benefit = remaining_task.perfect_benefit
+                else:
+                    benefit = remaining_task.perfect_benefit * math.exp(-0.0170 * (time_cum - remaining_task.deadline))
+                discounted_profit_tasks.append(benefit)
+            
+            tasks_probability_distribution = calculate_probabilty_distribution(discounted_profit_tasks)
+            max_discounted_profit_task = np.random.choice(remaining_tasks, p=tasks_probability_distribution)
+
+            output_tasks.append(max_discounted_profit_task.task_id)
+            time_cum += max_discounted_profit_task.duration
+
+            if time_cum <= max_discounted_profit_task.deadline:
+                benefit = max_discounted_profit_task.perfect_benefit
             else:
-                benefit = remaining_task.perfect_benefit * math.exp(-0.0170 * (time_cum - remaining_task.deadline))
-            discounted_profit_tasks.append(benefit)
-        
-        max_discounted_profit = max(discounted_profit_tasks)
-        max_discounted_profit_taskId = discounted_profit_tasks.index(max_discounted_profit)
-        max_discounted_profit_task = remaining_tasks[max_discounted_profit_taskId]
+                benefit = max_discounted_profit_task.perfect_benefit * math.exp(-0.0170 * (time_cum - max_discounted_profit_task.deadline))
+            benefit_cum += benefit
 
-
-        output_tasks.append(max_discounted_profit_task.task_id)
-        time_cum += max_discounted_profit_task.duration
-        benefit_cum += max_discounted_profit
-
-        remaining_tasks.remove(max_discounted_profit_task)
-    return output_tasks, benefit_cum
+            remaining_tasks.remove(max_discounted_profit_task)
+    if benefit_cum > best_plan_benfit:
+        best_plan_benfit = benefit_cum
+        best_plan = output_tasks
+    return best_plan, best_plan_benfit
 
 
 inputs_categories = ["large", "medium", "small"]
