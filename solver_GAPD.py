@@ -7,7 +7,7 @@ import datetime
 import numpy as np
 import pickle
 
-random.seed(123)
+# random.seed(123)
 work_dir = "./logs"
 now = datetime.datetime.now()
 logging = get_logger(os.path.join(work_dir, now.strftime('%Y-%m-%d %H:%M:%S') + ' log.txt'))
