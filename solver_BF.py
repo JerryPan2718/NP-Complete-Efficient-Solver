@@ -23,7 +23,7 @@ def solve(tasks, input_path):
     """
     global opt_dict
     MAX_TIME = 1440
-    n_round = 1000
+    n_round = 100
     n_tasks = len(tasks)
     opt = opt_dict.get(input_path, [None, float('-inf')])
     best_plan = opt[0]

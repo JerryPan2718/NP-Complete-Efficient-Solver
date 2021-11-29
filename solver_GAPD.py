@@ -24,7 +24,7 @@ def solve(tasks, input_path):
     ############################################## CONFIG ##############################################    
     global opt_dict
     MAX_TIME = 1440
-    n_round = 1
+    n_round = 10
     opt = opt_dict.get(input_path, [None, float('-inf')])
     best_plan = opt[0]
     best_plan_benfit = opt[1]
@@ -145,6 +145,7 @@ for inputs_category in inputs_categories:
         total_benefit = total_benefit + benefit
         # print(output_path)
         write_output_file(output_path, output)
+
 
 logging(str(total_benefit))
 
