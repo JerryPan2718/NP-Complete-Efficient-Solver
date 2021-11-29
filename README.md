@@ -51,6 +51,13 @@ Experiments:
 - (2) Softmax (n_round=100)
 - total_benfit = 2660092.022518058
 
+5. Reduce to ILP (solver_ILP.py)
+
+6. Batch DP
+
+7. Bucket DP
+
+
 
 Replicate our algorithm for submission
 1. python3 solver.py
