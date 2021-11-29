@@ -101,7 +101,7 @@ def solve(tasks, input_path):
                     benefit = remaining_task.perfect_benefit * math.exp(-0.0170 * (time_cum - remaining_task.deadline))
                 discounted_profit_tasks.append(benefit)
             
-            tasks_probability_distribution = calculate_probabilty_distribution_softmax_activation(discounted_profit_tasks)
+            tasks_probability_distribution = calculate_probabilty_distribution_softmax(discounted_profit_tasks)
             max_discounted_profit_task = np.random.choice(remaining_tasks, p=tasks_probability_distribution)
 
             output_tasks.append(max_discounted_profit_task.task_id)
