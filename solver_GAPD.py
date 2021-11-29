@@ -146,6 +146,7 @@ for inputs_category in inputs_categories:
         # print(output_path)
         write_output_file(output_path, output)
 
+
 logging(str(total_benefit))
 
 with open('optimum_output.pickle', 'wb') as f:
