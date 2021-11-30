@@ -95,11 +95,17 @@ def solve(tasks, input_path):
                     for i in range(len(new_benefits)):
                         new_benefit = new_benefits[i]
                         new_output_task = new_output_tasks[i]
+                        if len(set(new_output_task)) != len(set(curr_output_tasks)):
+                            print("new:", new_output_task)
+                            print("curr:", curr_output_tasks)
+                            print("i:", i, 'j:', j, 'k:', k)
+                            return
                         if new_benefit > curr_benefit:
-                            curr_output_tasks = new_output_task
+                            curr_output_tasks = new_output_task[:]
                             curr_benefit = new_benefit
                             exit_curr_loop = True
                             break
+                        print(len(set(new_output_task)))
                 if exit_curr_loop:
                     break
             if exit_curr_loop:
