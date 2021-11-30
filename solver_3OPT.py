@@ -111,7 +111,7 @@ for inputs_category in inputs_categories:
         tasks = read_input_file(input_path)
         output, benefit = solve(tasks, input_path)
         total_benefit = total_benefit + benefit
-        # print(output_path)
+        print(output_path)
         write_output_file(output_path, output)
 
 
