@@ -119,7 +119,7 @@ def solve(tasks, input_path):
     return best_plan, best_plan_benefit
     
 
-inputs_categories = ["large", "medium", "small"]
+inputs_categories = ["small"]
 
 print(os.listdir('inputs/'))
 
