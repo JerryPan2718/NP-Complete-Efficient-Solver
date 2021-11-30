@@ -68,8 +68,8 @@ def solve(tasks, input_path):
     while True:
         curr_benefit = fitness(curr_output_tasks, tasks)
         for i in range(len(tasks)):
-            for j in range(i+1, len(tasks)):
-                for k in range(j+1, len(tasks)):
+            for j in range(i+5, len(tasks)):
+                for k in range(j+5, len(tasks)):
                     new_output_tasks1 = curr_output_tasks[:]
                     new_output_tasks2 = curr_output_tasks[:]
                     new_output_tasks3 = curr_output_tasks[:]
@@ -95,17 +95,11 @@ def solve(tasks, input_path):
                     for i in range(len(new_benefits)):
                         new_benefit = new_benefits[i]
                         new_output_task = new_output_tasks[i]
-                        if len(set(new_output_task)) != len(set(curr_output_tasks)):
-                            print("new:", new_output_task)
-                            print("curr:", curr_output_tasks)
-                            print("i:", i, 'j:', j, 'k:', k)
-                            return
                         if new_benefit > curr_benefit:
                             curr_output_tasks = new_output_task[:]
                             curr_benefit = new_benefit
                             exit_curr_loop = True
                             break
-                        print(len(set(new_output_task)))
                 if exit_curr_loop:
                     break
             if exit_curr_loop:
@@ -117,15 +111,15 @@ def solve(tasks, input_path):
         # print(f"epoch {epoch_idx}: benefit {curr_benefit}")
     if curr_benefit > best_plan_benefit:
         opt_changed = True
-        best_plan_benfit = curr_benefit
+        best_plan_benefit = curr_benefit
         best_plan = postprocessing(curr_output_tasks, tasks)
     if opt_changed:
-        opt_dict[input_path] = (best_plan, best_plan_benfit)
-    print(f"epoch {epoch_idx}: benefit {best_plan_benfit}")
-    return curr_output_tasks, curr_benefit
+        opt_dict[input_path] = (best_plan, best_plan_benefit)
+    print(f"epoch {epoch_idx}: benefit {best_plan_benefit}")
+    return best_plan, best_plan_benefit
     
 
-inputs_categories = ["medium", "small"]
+inputs_categories = ["large", "medium", "small"]
 
 print(os.listdir('inputs/'))
 
