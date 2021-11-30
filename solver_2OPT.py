@@ -51,6 +51,19 @@ def solve(tasks, input_path):
             idx += 1
         return benefit_cum
 
+    def postprocessing(output_tasks, tasks):
+        idx = 0
+        MAX_TIME = 1440
+        time_cum = 0
+        processed_output_taskId = []
+        while idx < len(output_tasks) and time_cum + tasks[output_tasks[idx] - 1].duration <= MAX_TIME:
+            id = output_tasks[idx] - 1
+            time_cum = time_cum + tasks[id].duration
+            processed_output_taskId.append(tasks[id].task_id)
+            idx += 1
+        total_time = sum([tasks[taskId-1].duration for taskId in processed_output_taskId])
+        return processed_output_taskId
+
     curr_output_task = [i for i in range(1, len(tasks)+1)]
     curr_benefit = fitness(curr_output_task, tasks)
     exit_curr_loop = False
@@ -77,7 +90,7 @@ def solve(tasks, input_path):
     if curr_benefit > best_plan_benfit:
         opt_changed = True
         best_plan_benfit = curr_benefit
-        best_plan = curr_output_task
+        best_plan = postprocessing(curr_output_task, tasks)
     if opt_changed:
         opt_dict[input_path] = (best_plan, best_plan_benfit)
     print(f"epoch {epoch_idx}: benefit {best_plan_benfit}")

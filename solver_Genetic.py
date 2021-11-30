@@ -76,15 +76,12 @@ def solve(tasks):
         MAX_TIME = 1440
         time_cum = 0
         processed_output_taskId = []
-        while idx < len(tasks) and time_cum + tasks[output_tasks[idx] - 1].duration <= MAX_TIME:
+        while idx < len(output_tasks) and time_cum + tasks[output_tasks[idx] - 1].duration <= MAX_TIME:
             id = output_tasks[idx] - 1
             time_cum = time_cum + tasks[id].duration
             processed_output_taskId.append(tasks[id].task_id)
             idx += 1
         total_time = sum([tasks[taskId-1].duration for taskId in processed_output_taskId])
-        time_exceeded = total_time > 1440
-        # print(time_cum, total_time, time_exceeded)
-        # print(processed_output_taskId)
         return processed_output_taskId
 
     # Main
