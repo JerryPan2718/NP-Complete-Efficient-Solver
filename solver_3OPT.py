@@ -22,11 +22,19 @@ def solve(tasks, input_path):
     Returns:
         output: list of igloos in order of polishing  
     """
-    num_epoch = 10000
+    ############################################## CONFIG ##############################################    
+    global opt_dict
+    MAX_TIME = 1440
+    opt = opt_dict.get(input_path, [None, float('-inf')])
+    best_plan = opt[0]
+    best_plan_benefit = opt[1]
+    opt_changed = False
     epoch_idx = 0
 
+    ####################################################################################################
+    
+
     def fitness(output_tasks, tasks):
-        # print(1)
         MAX_TIME = 1440
         time_cum = 0
         benefit_cum = 0
@@ -40,6 +48,19 @@ def solve(tasks, input_path):
                 benefit_cum += tasks[id].perfect_benefit * math.exp(-0.0170 * (time_cum - tasks[id].deadline))
             idx += 1
         return benefit_cum
+
+    def postprocessing(output_tasks, tasks):
+        idx = 0
+        MAX_TIME = 1440
+        time_cum = 0
+        processed_output_taskId = []
+        while idx < len(output_tasks) and time_cum + tasks[output_tasks[idx] - 1].duration <= MAX_TIME:
+            id = output_tasks[idx] - 1
+            time_cum = time_cum + tasks[id].duration
+            processed_output_taskId.append(tasks[id].task_id)
+            idx += 1
+        total_time = sum([tasks[taskId-1].duration for taskId in processed_output_taskId])
+        return processed_output_taskId
 
     curr_output_tasks = [i for i in range(1, len(tasks)+1)]
     curr_benefit = fitness(curr_output_tasks, tasks)
@@ -88,6 +109,13 @@ def solve(tasks, input_path):
         epoch_idx += 1
         exit_curr_loop = False
         # print(f"epoch {epoch_idx}: benefit {curr_benefit}")
+    if curr_benefit > best_plan_benefit:
+        opt_changed = True
+        best_plan_benfit = curr_benefit
+        best_plan = postprocessing(curr_output_tasks, tasks)
+    if opt_changed:
+        opt_dict[input_path] = (best_plan, best_plan_benfit)
+    print(f"epoch {epoch_idx}: benefit {best_plan_benfit}")
     return curr_output_tasks, curr_benefit
     
 

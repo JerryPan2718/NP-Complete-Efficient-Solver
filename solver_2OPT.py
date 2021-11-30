@@ -29,14 +29,13 @@ def solve(tasks, input_path):
     MAX_TIME = 1440
     opt = opt_dict.get(input_path, [None, float('-inf')])
     best_plan = opt[0]
-    best_plan_benfit = opt[1]
+    best_plan_benefit = opt[1]
     opt_changed = False
 
     ####################################################################################################
     epoch_idx = 0
 
     def fitness(output_tasks, tasks):
-        # print(1)
         MAX_TIME = 1440
         time_cum = 0
         benefit_cum = 0
@@ -87,14 +86,14 @@ def solve(tasks, input_path):
         epoch_idx += 1
         exit_curr_loop = False
         
-    if curr_benefit > best_plan_benfit:
+    if curr_benefit > best_plan_benefit:
         opt_changed = True
-        best_plan_benfit = curr_benefit
+        best_plan_benefit = curr_benefit
         best_plan = postprocessing(curr_output_task, tasks)
     if opt_changed:
-        opt_dict[input_path] = (best_plan, best_plan_benfit)
-    print(f"epoch {epoch_idx}: benefit {best_plan_benfit}")
-    return best_plan, best_plan_benfit
+        opt_dict[input_path] = (best_plan, best_plan_benefit)
+    print(f"epoch {epoch_idx}: benefit {best_plan_benefit}")
+    return best_plan, best_plan_benefit
     
     
 
