@@ -70,7 +70,7 @@ def solve(tasks, input_path):
         # print(f"epoch {epoch_idx}: benefit {curr_benefit}")
         curr_benefit = fitness(curr_output_task, tasks)
         for i in range(len(tasks)):
-            for j in range(len(tasks)):
+            for j in range(i+1, len(tasks)):
                 new_output_task = curr_output_task[:]
                 new_output_task[i], new_output_task[j] = new_output_task[j], new_output_task[i]
                 new_benefit = fitness(new_output_task, tasks)

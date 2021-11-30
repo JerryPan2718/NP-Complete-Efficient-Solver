@@ -68,8 +68,8 @@ def solve(tasks, input_path):
     while True:
         curr_benefit = fitness(curr_output_tasks, tasks)
         for i in range(len(tasks)):
-            for j in range(len(tasks)):
-                for k in range(len(tasks)):
+            for j in range(i+1, len(tasks)):
+                for k in range(j+1, len(tasks)):
                     new_output_tasks1 = curr_output_tasks[:]
                     new_output_tasks2 = curr_output_tasks[:]
                     new_output_tasks3 = curr_output_tasks[:]
