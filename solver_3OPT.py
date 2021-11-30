@@ -135,7 +135,7 @@ for inputs_category in inputs_categories:
         if file_name[0] == ".":
             continue
         input_path = 'inputs/' + inputs_category + "/" + file_name
-        # print(input_path)
+        print(f"task {task_idx}: {input_path}")
         output_path = 'outputs/' + inputs_category + "/" + file_name[:-3] + '.out'
         tasks = read_input_file(input_path)
         output, benefit = solve(tasks, input_path)
