@@ -28,12 +28,21 @@ Algorithm Brainstorms:
 - relation: f(time_left, task_left) = f(time_left - task_i.duration, task_left - task_i) + task_i.discountedProfit 
     - i based on the ranking of sorted (profit/duration)
 - 1440 * (2 ** n)
+- 1440 * (2 ** n / k)
+- 1440 * n (submodular -> all tasks before deadlines -> n number machine scheduling problems)
 
 3. Local swap (Edward)
 - 2/3 OP
 - 3 OP is really good for TSP
-4. 
-
+- while True:
+    - for set_i in set_3:
+        - for comb_i in all_combs (==6):
+            - if new_score > curr_score:
+                - curr_score = new_score
+4. GRASP
+5. Submodularity
+6. DP
+- 
 
 Experiments:
 1. Genetic Algorithm (solver_Genetic.py)
@@ -56,6 +65,13 @@ Experiments:
 - total_benfit = 2166796.452501703
 - (2) Softmax (n_round=100)
 - total_benfit = 2660092.022518058
+
+5. Reduce to ILP (solver_ILP.py)
+
+6. Batch DP
+
+7. Bucket DP
+
 
 
 
