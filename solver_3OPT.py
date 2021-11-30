@@ -119,7 +119,7 @@ def solve(tasks, input_path):
     return curr_output_tasks, curr_benefit
     
 
-inputs_categories = ["large", "medium", "small"]
+inputs_categories = ["medium", "small"]
 
 print(os.listdir('inputs/'))
 
