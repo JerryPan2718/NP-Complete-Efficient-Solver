@@ -129,19 +129,20 @@ if os.path.exists("optimum_output.pickle"):
     with open("optimum_output.pickle", "rb") as f:
         opt_dict = pickle.load(f)
 
+task_idx = 0
 for inputs_category in inputs_categories:
     for file_name in os.listdir(os.path.join('inputs/', inputs_category)):
         if file_name[0] == ".":
             continue
         input_path = 'inputs/' + inputs_category + "/" + file_name
-        # print(input_path)
+        print(f"task {task_idx}: {input_path}")
         output_path = 'outputs/' + inputs_category + "/" + file_name[:-3] + '.out'
         tasks = read_input_file(input_path)
         output, benefit = solve(tasks, input_path)
         total_benefit = total_benefit + benefit
         print(output_path)
         write_output_file(output_path, output)
-
+        task_idx += 1
 
 logging(str(total_benefit))
 
