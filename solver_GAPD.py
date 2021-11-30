@@ -24,7 +24,7 @@ def solve(tasks, input_path):
     ############################################## CONFIG ##############################################    
     global opt_dict
     MAX_TIME = 1440
-    n_round = 10
+    n_round = 1
     opt = opt_dict.get(input_path, [None, float('-inf')])
     best_plan = opt[0]
     best_plan_benfit = opt[1]

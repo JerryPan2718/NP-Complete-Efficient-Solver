@@ -29,6 +29,12 @@ Algorithm Brainstorms:
     - i based on the ranking of sorted (profit/duration)
 - 1440 * (2 ** n)
 
+3. Local swap (Edward)
+- 2/3 OP
+- 3 OP is really good for TSP
+4. 
+
+
 Experiments:
 1. Genetic Algorithm (solver_Genetic.py)
 - Initialize a reasonably good output using Greedy Algorithm, and then use Genetic Algorithm to optimize based on our reasonably good output
@@ -50,6 +56,7 @@ Experiments:
 - total_benfit = 2166796.452501703
 - (2) Softmax (n_round=100)
 - total_benfit = 2660092.022518058
+
 
 
 Replicate our algorithm for submission
