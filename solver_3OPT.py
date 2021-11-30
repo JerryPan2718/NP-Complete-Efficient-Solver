@@ -49,25 +49,47 @@ def solve(tasks, input_path):
         for i in range(len(tasks)):
             for j in range(len(tasks)):
                 for k in range(len(tasks)):
-                    new_output_tasks = curr_output_tasks[:]
-                    new_output_tasks[i], new_output_tasks[j] = new_output_tasks[j], new_output_tasks[i]
-                    new_benefit = fitness(new_output_tasks, tasks)
-                    if new_benefit > curr_benefit:
-                        curr_output_tasks = new_output_tasks
-                        curr_benefit = new_benefit
-                        exit_curr_loop = True
-                        break
+                    new_output_tasks1 = curr_output_tasks[:]
+                    new_output_tasks2 = curr_output_tasks[:]
+                    new_output_tasks3 = curr_output_tasks[:]
+                    new_output_tasks4 = curr_output_tasks[:]
+                    new_output_tasks5 = curr_output_tasks[:]
+
+                    new_output_tasks1[i], new_output_tasks1[j], new_output_tasks1[k] = new_output_tasks1[j], new_output_tasks1[i], new_output_tasks1[k]
+                    new_output_tasks2[i], new_output_tasks2[j], new_output_tasks2[k] = new_output_tasks2[k], new_output_tasks2[j], new_output_tasks2[i]
+                    new_output_tasks3[i], new_output_tasks3[j], new_output_tasks3[k] = new_output_tasks3[i], new_output_tasks3[k], new_output_tasks3[j]
+                    new_output_tasks4[i], new_output_tasks4[j], new_output_tasks4[k] = new_output_tasks4[j], new_output_tasks4[k], new_output_tasks4[i]
+                    new_output_tasks5[i], new_output_tasks5[j], new_output_tasks5[k] = new_output_tasks5[k], new_output_tasks5[i], new_output_tasks5[j]
+
+
+                    new_benefit1 = fitness(new_output_tasks1, tasks)
+                    new_benefit2 = fitness(new_output_tasks2, tasks)
+                    new_benefit3 = fitness(new_output_tasks3, tasks)
+                    new_benefit4 = fitness(new_output_tasks4, tasks)
+                    new_benefit5 = fitness(new_output_tasks5, tasks)
+
+                    new_benefits = [new_benefit1, new_benefit2, new_benefit3, new_benefit4, new_benefit5]
+                    new_output_tasks = [new_output_tasks1, new_output_tasks2, new_output_tasks3, new_output_tasks4, new_output_tasks5]
+
+                    for i in range(len(new_benefits)):
+                        new_benefit = new_benefits[i]
+                        new_output_task = new_output_tasks[i]
+                        if new_benefit > curr_benefit:
+                            curr_output_tasks = new_output_task
+                            curr_benefit = new_benefit
+                            exit_curr_loop = True
+                            break
+                if exit_curr_loop:
+                    break
             if exit_curr_loop:
                 break
         if exit_curr_loop == False:
             break
         epoch_idx += 1
         exit_curr_loop = False
-        print(f"epoch {epoch_idx}: benefit {curr_benefit}")
+        # print(f"epoch {epoch_idx}: benefit {curr_benefit}")
     return curr_output_tasks, curr_benefit
     
-    
-
 
 inputs_categories = ["large", "medium", "small"]
 
