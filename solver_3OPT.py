@@ -31,7 +31,7 @@ def solve(tasks, input_path):
         time_cum = 0
         benefit_cum = 0
         idx = 0
-        while idx < len(tasks) and time_cum + tasks[output_tasks[idx] - 1].duration <= MAX_TIME:
+        while idx < len(output_tasks) and time_cum + tasks[output_tasks[idx] - 1].duration <= MAX_TIME:
             id = output_tasks[idx] - 1
             time_cum = time_cum + tasks[id].duration
             if time_cum <= tasks[id].deadline:
@@ -44,7 +44,7 @@ def solve(tasks, input_path):
     curr_output_tasks = [i for i in range(1, len(tasks)+1)]
     curr_benefit = fitness(curr_output_tasks, tasks)
     exit_curr_loop = False
-    while epoch_idx < num_epoch:
+    while True:
         curr_benefit = fitness(curr_output_tasks, tasks)
         for i in range(len(tasks)):
             for j in range(len(tasks)):

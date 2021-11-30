@@ -15,6 +15,8 @@ logging = get_logger(os.path.join(work_dir, now.strftime('%Y-%m-%d %H:%M:%S') + 
 
 total_benefit = 0
 
+
+
 def solve(tasks, input_path):
     """
     Args:
@@ -22,7 +24,15 @@ def solve(tasks, input_path):
     Returns:
         output: list of igloos in order of polishing  
     """
-    num_epoch = 10000
+    ############################################## CONFIG ##############################################    
+    global opt_dict
+    MAX_TIME = 1440
+    opt = opt_dict.get(input_path, [None, float('-inf')])
+    best_plan = opt[0]
+    best_plan_benfit = opt[1]
+    opt_changed = False
+
+    ####################################################################################################
     epoch_idx = 0
 
     def fitness(output_tasks, tasks):
@@ -41,18 +51,19 @@ def solve(tasks, input_path):
             idx += 1
         return benefit_cum
 
-    curr_output_tasks = [i for i in range(1, len(tasks)+1)]
-    curr_benefit = fitness(curr_output_tasks, tasks)
+    curr_output_task = [i for i in range(1, len(tasks)+1)]
+    curr_benefit = fitness(curr_output_task, tasks)
     exit_curr_loop = False
-    while epoch_idx < num_epoch:
-        curr_benefit = fitness(curr_output_tasks, tasks)
+    while True:
+        # print(f"epoch {epoch_idx}: benefit {curr_benefit}")
+        curr_benefit = fitness(curr_output_task, tasks)
         for i in range(len(tasks)):
             for j in range(len(tasks)):
-                new_output_tasks = curr_output_tasks[:]
-                new_output_tasks[i], new_output_tasks[j] = new_output_tasks[j], new_output_tasks[i]
-                new_benefit = fitness(new_output_tasks, tasks)
+                new_output_task = curr_output_task[:]
+                new_output_task[i], new_output_task[j] = new_output_task[j], new_output_task[i]
+                new_benefit = fitness(new_output_task, tasks)
                 if new_benefit > curr_benefit:
-                    curr_output_tasks = new_output_tasks
+                    curr_output_task = new_output_task
                     curr_benefit = new_benefit
                     exit_curr_loop = True
                     break
@@ -62,8 +73,15 @@ def solve(tasks, input_path):
             break
         epoch_idx += 1
         exit_curr_loop = False
-        print(f"epoch {epoch_idx}: benefit {curr_benefit}")
-    return curr_output_tasks, curr_benefit
+        
+    if curr_benefit > best_plan_benfit:
+        opt_changed = True
+        best_plan_benfit = curr_benefit
+        best_plan = curr_output_task
+    if opt_changed:
+        opt_dict[input_path] = (best_plan, best_plan_benfit)
+    print(f"epoch {epoch_idx}: benefit {best_plan_benfit}")
+    return best_plan, best_plan_benfit
     
     
 
@@ -78,18 +96,20 @@ if os.path.exists("optimum_output.pickle"):
     with open("optimum_output.pickle", "rb") as f:
         opt_dict = pickle.load(f)
 
+task_idx = 0
 for inputs_category in inputs_categories:
     for file_name in os.listdir(os.path.join('inputs/', inputs_category)):
         if file_name[0] == ".":
             continue
         input_path = 'inputs/' + inputs_category + "/" + file_name
-        # print(input_path)
+        print(f"task {task_idx}: {input_path}")
         output_path = 'outputs/' + inputs_category + "/" + file_name[:-3] + '.out'
         tasks = read_input_file(input_path)
         output, benefit = solve(tasks, input_path)
         total_benefit = total_benefit + benefit
-        # print(output_path)
+        
         write_output_file(output_path, output)
+        task_idx += 1
 
 
 logging(str(total_benefit))
