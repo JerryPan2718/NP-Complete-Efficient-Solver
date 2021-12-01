@@ -43,7 +43,7 @@ def solve(tasks, input_path):
         time_cum = 0
         benefit_cum = 0
         idx = 0
-        while idx < len(tasks) and time_cum + tasks[output_tasks[idx] - 1].duration <= MAX_TIME:
+        while idx < len(output_tasks) and time_cum + tasks[output_tasks[idx] - 1].duration <= MAX_TIME:
             id = output_tasks[idx] - 1
             time_cum = time_cum + tasks[id].duration
             if time_cum <= tasks[id].deadline:
