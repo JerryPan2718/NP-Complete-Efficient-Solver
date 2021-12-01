@@ -3,6 +3,7 @@ import os
 import random
 import math
 from exp_utils import get_logger
+from Task import Task
 import datetime
 import numpy as np
 import pickle
@@ -65,8 +66,14 @@ def solve(tasks, input_path):
 
     same = 0
     count = 0
-    curr_output_tasks = [i for i in range(1, len(tasks)+1)]
-    random.shuffle(curr_output_tasks)
+
+    ############################## Initial Input ################################################
+    # curr_output_tasks = [i for i in range(1, len(tasks)+1)]
+    # random.shuffle(curr_output_tasks)
+    tasks_greedy = sorted(tasks, key = lambda task: (round(-task.perfect_benefit / task.duration, 1), task.deadline))
+    curr_output_tasks = [task.task_id for task in tasks_greedy]
+    # curr_output_tasks = []
+    ############################## TO CHANGE ####################################################
     start = time.time()
     early_abort_epoch = 20
     while True:
@@ -80,8 +87,8 @@ def solve(tasks, input_path):
             curr_benefit = fitness(curr_output_tasks, tasks)
             for i in range(len(tasks)):
                 for j in range(i+1, len(tasks)):
-                    less_raito = tasks[curr_output_tasks[j]-1].get_ratio() < tasks[curr_output_tasks[i]-1].get_ratio()
-                    later_ddl = tasks[curr_output_tasks[j]-1].get_deadline() > tasks[curr_output_tasks[i]-1].get_deadline()
+                    less_raito = tasks[curr_output_tasks[j]-1].get_benefit_over_duration_ratio() < tasks[curr_output_tasks[i]-1].get_benefit_over_duration_ratio()
+                    later_ddl = tasks[curr_output_tasks[j]-1].deadline > tasks[curr_output_tasks[i]-1].deadline
                     if less_raito and later_ddl:
                         continue
                     new_output_task = curr_output_tasks[:]
@@ -109,7 +116,7 @@ def solve(tasks, input_path):
         end = time.time()
         elapsed = end - start
         count = count + 1
-        # print(f"{count}. epoch: {epoch_idx} benefit: {curr_benefit} time: {elapsed} best: {best_plan_benefit}")
+        print(f"{count}. epoch: {epoch_idx} benefit: {curr_benefit} time: {elapsed} best: {best_plan_benefit}")
         epoch_idx = 0
 
     end = time.time()

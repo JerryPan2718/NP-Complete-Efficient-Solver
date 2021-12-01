@@ -77,7 +77,9 @@ Experiments:
         - This multiple initialization could potentially turn the local maximum of 2/3 OPT into global maximum
     3. Early abort based on change of fitness() reduces runtime
 - Todo:
-    1. 
+    1. Only calculate the fitness of swapped tasks (low priority)
+    2. Initial tasks from greedy
+    3. 
 
 
 

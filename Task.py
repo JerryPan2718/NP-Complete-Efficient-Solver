@@ -85,6 +85,9 @@ class Task:
         minutes_late = max(0, minutes_late)
         return self.get_max_benefit() * math.exp(-0.0170 * minutes_late)
 
+    def get_benefit_over_duration_ratio(self) -> float:
+        return self.perfect_benefit / self.duration
+
     def __str__(self):
         """
         Generates a readable string representation of a task
