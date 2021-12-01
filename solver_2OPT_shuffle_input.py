@@ -64,7 +64,7 @@ def solve(tasks, input_path):
             idx += 1
         return processed_output_taskId
 
-    same = 0
+    unchanged_iteration = 0
     count = 0
 
     ############################## Initial Input & Config ################################################
@@ -108,10 +108,10 @@ def solve(tasks, input_path):
         if curr_benefit > best_plan_benefit:
             best_plan_benefit = curr_benefit
             best_plan = curr_output_tasks
-            same = 0
+            unchanged_iteration = 0
         else:
-            same += 1
-        if same > early_abort_epoch:
+            unchanged_iteration += 1
+        if unchanged_iteration > early_abort_epoch:
             break
         end = time.time()
         elapsed = end - start

@@ -16,7 +16,7 @@ now = datetime.datetime.now()
 logging = get_logger(os.path.join(work_dir, now.strftime('%Y-%m-%d %H:%M:%S') + ' log.txt'))
 
 total_benefit = 0
-start = time.time()
+
 
 
 def solve(tasks, input_path):
@@ -28,16 +28,14 @@ def solve(tasks, input_path):
     """
     ############################################## CONFIG ##############################################    
     global opt_dict
+    global full_opt_dict
     MAX_TIME = 1440
-    opt = opt_dict.get(input_path, [None, float('-inf')])
-    best_plan = opt[0]
-    best_plan_benefit = opt[1]
-    opt_changed = False
+    # opt = opt_dict.get(input_path, [None, float('-inf')])
+    # best_plan = opt[0]
+    # best_plan_benefit = opt[1]
 
     ####################################################################################################
     epoch_idx = 0
-    unchanged_iteration = 0
-    count = 0
 
     def fitness(output_tasks, tasks):
         assert len(output_tasks) == len(set(output_tasks)), "output_tasks contain duplicates!"
@@ -67,53 +65,17 @@ def solve(tasks, input_path):
             idx += 1
         return processed_output_taskId
 
-  
+    unchanged_iteration = 0
+    count = 0
 
     ############################## Initial Input ################################################
-    # curr_output_tasks = [i for i in range(1, len(tasks)+1)]
-    # random.shuffle(curr_output_tasks)
-    # tasks_greedy = sorted(tasks, key = lambda task: (round(-task.perfect_benefit / task.duration, 1), task.deadline))
-    # curr_output_tasks = [task.task_id for task in tasks_greedy]
-    early_abort_epoch = 20
-
-    output_tasks = []
-    remaining_tasks = tasks[:]
-    idx = 0
-    time_cum = 0
-    benefit_cum = 0
-    MAX_TIME = 1440
-    while remaining_tasks and time_cum <= MAX_TIME:
-        discounted_profit_tasks = []
-        remaining_tasks = [task for task in remaining_tasks if task.duration + time_cum <= MAX_TIME]
-        if not remaining_tasks:
-            break
-        for i in range(len(remaining_tasks)):
-            remaining_task = remaining_tasks[i]
-            if time_cum <= remaining_task.deadline:
-                benefit = remaining_task.perfect_benefit
-            else:
-                benefit = remaining_task.perfect_benefit * math.exp(-0.0170 * (time_cum - remaining_task.deadline))
-            discounted_profit_tasks.append(benefit)
-        
-        max_discounted_profit = max(discounted_profit_tasks)
-        max_discounted_profit_taskId = discounted_profit_tasks.index(max_discounted_profit)
-        max_discounted_profit_task = remaining_tasks[max_discounted_profit_taskId]
-
-
-        output_tasks.append(max_discounted_profit_task.task_id)
-        time_cum += max_discounted_profit_task.duration
-        benefit_cum += max_discounted_profit
-
-        remaining_tasks.remove(max_discounted_profit_task)
-    
-    curr_output_tasks = output_tasks
-    to_append_for_curr_output_tasks = []
-    for task in tasks:
-        if task.task_id not in curr_output_tasks:
-            to_append_for_curr_output_tasks.append(task.task_id)
-    random.shuffle(to_append_for_curr_output_tasks)
-    curr_output_tasks = curr_output_tasks + to_append_for_curr_output_tasks
+    opt = opt_dict.get(input_path, [None, float('-inf')])
+    best_plan = opt[0]
+    best_plan_benefit = opt[1]
+    curr_output_tasks = best_plan
     ############################## TO CHANGE ####################################################
+    start = time.time()
+    early_abort_epoch = 20
     while True:
         curr_benefit = fitness(curr_output_tasks, tasks)
         exit_curr_loop = False
@@ -159,6 +121,7 @@ def solve(tasks, input_path):
 
     end = time.time()
     elapsed = end - start
+    full_opt_dict[input_path] = (best_plan[:], best_plan_benefit)
     best_plan = postprocessing(best_plan, tasks)
     opt_dict[input_path] = (best_plan, best_plan_benefit)
 
@@ -178,6 +141,11 @@ opt_dict = {}
 if os.path.exists("optimum_output.pickle"):
     with open("optimum_output.pickle", "rb") as f:
         opt_dict = pickle.load(f)
+
+full_opt_dict = {}
+if os.path.exists("full_optimum_output.pickle"):
+    with open("full_optimum_output.pickle") as f:
+        full_opt_dict = pickle.load(f)
 
 task_idx = 0
 for inputs_category in inputs_categories:
@@ -210,6 +178,9 @@ logging(str(total_benefit))
 
 with open('optimum_output.pickle', 'wb') as f:
     pickle.dump(opt_dict, f)
+
+with open('full_optimum_output.pickle', 'wb') as f:
+    pickle.dump(full_opt_dict, f)
 
 # Here's an example of how to run your solver.
 # if __name__ == '__main__':

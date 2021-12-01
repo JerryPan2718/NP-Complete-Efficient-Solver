@@ -1,3 +1,26 @@
+'''
+sBest ← s0
+bestCandidate ← s0
+tabuList ← []
+tabuList.push(s0)
+while (not stoppingCondition())
+    sNeighborhood ← getNeighbors(bestCandidate)
+    bestCandidate ← sNeighborhood[0]
+    for (sCandidate in sNeighborhood)
+        if ( (not tabuList.contains(sCandidate)) and (fitness(sCandidate) > fitness(bestCandidate)) )
+            bestCandidate ← sCandidate
+        end
+    end
+    if (fitness(bestCandidate) > fitness(sBest))
+        sBest ← bestCandidate
+    end
+    tabuList.push(bestCandidate)
+    if (tabuList.size > maxTabuSize)
+        tabuList.removeFirst()
+    end
+end
+return sBest
+'''
 from parse import read_input_file, write_output_file
 import os
 import random
@@ -16,7 +39,6 @@ now = datetime.datetime.now()
 logging = get_logger(os.path.join(work_dir, now.strftime('%Y-%m-%d %H:%M:%S') + ' log.txt'))
 
 total_benefit = 0
-start = time.time()
 
 
 def solve(tasks, input_path):
@@ -33,11 +55,9 @@ def solve(tasks, input_path):
     best_plan = opt[0]
     best_plan_benefit = opt[1]
     opt_changed = False
+    max_tabu_length = 30
 
     ####################################################################################################
-    epoch_idx = 0
-    unchanged_iteration = 0
-    count = 0
 
     def fitness(output_tasks, tasks):
         assert len(output_tasks) == len(set(output_tasks)), "output_tasks contain duplicates!"
@@ -67,107 +87,57 @@ def solve(tasks, input_path):
             idx += 1
         return processed_output_taskId
 
-  
+    def neighbors(output_tasks):
+        neighbors = []
+        for i in range(len(output_tasks)):
+            for j in range(i + 1, len(output_tasks)):
+                temp = output_tasks[:]
+                temp[i], temp[j] = temp[j], temp[i]
+                neighbors.append(temp)
+        return neighbors
 
     ############################## Initial Input ################################################
-    # curr_output_tasks = [i for i in range(1, len(tasks)+1)]
-    # random.shuffle(curr_output_tasks)
-    # tasks_greedy = sorted(tasks, key = lambda task: (round(-task.perfect_benefit / task.duration, 1), task.deadline))
-    # curr_output_tasks = [task.task_id for task in tasks_greedy]
-    early_abort_epoch = 20
-
-    output_tasks = []
-    remaining_tasks = tasks[:]
-    idx = 0
-    time_cum = 0
-    benefit_cum = 0
-    MAX_TIME = 1440
-    while remaining_tasks and time_cum <= MAX_TIME:
-        discounted_profit_tasks = []
-        remaining_tasks = [task for task in remaining_tasks if task.duration + time_cum <= MAX_TIME]
-        if not remaining_tasks:
-            break
-        for i in range(len(remaining_tasks)):
-            remaining_task = remaining_tasks[i]
-            if time_cum <= remaining_task.deadline:
-                benefit = remaining_task.perfect_benefit
-            else:
-                benefit = remaining_task.perfect_benefit * math.exp(-0.0170 * (time_cum - remaining_task.deadline))
-            discounted_profit_tasks.append(benefit)
-        
-        max_discounted_profit = max(discounted_profit_tasks)
-        max_discounted_profit_taskId = discounted_profit_tasks.index(max_discounted_profit)
-        max_discounted_profit_task = remaining_tasks[max_discounted_profit_taskId]
-
-
-        output_tasks.append(max_discounted_profit_task.task_id)
-        time_cum += max_discounted_profit_task.duration
-        benefit_cum += max_discounted_profit
-
-        remaining_tasks.remove(max_discounted_profit_task)
-    
-    curr_output_tasks = output_tasks
+    curr_output_tasks = best_plan
     to_append_for_curr_output_tasks = []
     for task in tasks:
-        if task.task_id not in curr_output_tasks:
+        if task.task_id not in best_plan:
             to_append_for_curr_output_tasks.append(task.task_id)
     random.shuffle(to_append_for_curr_output_tasks)
     curr_output_tasks = curr_output_tasks + to_append_for_curr_output_tasks
+    best_plan = best_plan_candidate = curr_output_tasks
+    tabu_list = [curr_output_tasks]
     ############################## TO CHANGE ####################################################
-    while True:
-        curr_benefit = fitness(curr_output_tasks, tasks)
-        exit_curr_loop = False
 
-        i, j, k = random.sample(range(1, len(tasks)), 3)
-        curr_output_tasks[i], curr_output_tasks[j], curr_output_tasks[k] = curr_output_tasks[k], curr_output_tasks[i], curr_output_tasks[j]
-        
-        while True:
-            curr_benefit = fitness(curr_output_tasks, tasks)
-            for i in range(len(tasks)):
-                for j in range(i+1, len(tasks)):
-                    less_raito = tasks[curr_output_tasks[j]-1].get_benefit_over_duration_ratio() < tasks[curr_output_tasks[i]-1].get_benefit_over_duration_ratio()
-                    later_ddl = tasks[curr_output_tasks[j]-1].deadline > tasks[curr_output_tasks[i]-1].deadline
-                    if less_raito and later_ddl:
-                        continue
-                    new_output_task = curr_output_tasks[:]
-                    new_output_task[i], new_output_task[j] = new_output_task[j], new_output_task[i]
-                    new_benefit = fitness(new_output_task, tasks)
-                    if new_benefit > curr_benefit:
-                        curr_output_tasks = new_output_task
-                        curr_benefit = new_benefit
-                        exit_curr_loop = True
-                        break
-                if exit_curr_loop:
-                    break
-            if exit_curr_loop == False:
-                break
-            epoch_idx += 1
-            exit_curr_loop = False
-        if curr_benefit > best_plan_benefit:
-            best_plan_benefit = curr_benefit
-            best_plan = curr_output_tasks
+    early_abort_epoch = 20
+    unchanged_iteration = 0
+    iteration_num = 0
+
+    while True:
+        curr_output_neighbors = neighbors(curr_output_tasks)
+        best_plan_candidate = curr_output_neighbors[0]
+        for candidate_output in curr_output_neighbors:
+            if (not candidate_output in tabu_list) and fitness(candidate_output, tasks) > fitness(best_plan_candidate, tasks):
+                best_plan_candidate = candidate_output[:]
+        print("best_plan_candidate_fitness:", fitness(best_plan_candidate, tasks))
+        if fitness(best_plan_candidate, tasks) > fitness(best_plan, tasks):
+            best_plan = best_plan_candidate[:]
             unchanged_iteration = 0
         else:
             unchanged_iteration += 1
+        tabu_list.append(best_plan_candidate)
+        if len(tabu_list) > max_tabu_length:
+            tabu_list.pop(0)
         if unchanged_iteration > early_abort_epoch:
             break
-        end = time.time()
-        elapsed = end - start
-        count = count + 1
-        print(f"{count}. epoch: {epoch_idx} benefit: {curr_benefit} time: {elapsed} best: {best_plan_benefit}")
-        epoch_idx = 0
+        iteration_num += 1
+        print(f"{iteration_num}. benefit: {fitness(best_plan, tasks)}")
 
-    end = time.time()
-    elapsed = end - start
     best_plan = postprocessing(best_plan, tasks)
-    opt_dict[input_path] = (best_plan, best_plan_benefit)
+    best_plan_benefit = fitness(best_plan, tasks)
+    if best_plan_benefit > opt_dict[input_path][1]:
+        opt_dict[input_path] = [best_plan, best_plan_benefit]
 
-    print(f"benefit: {best_plan_benefit} time: {elapsed}")
-
-    return best_plan, best_plan_benefit
-    
-    
-
+    return postprocessing(best_plan, tasks), fitness(best_plan, tasks)
 
 inputs_categories = ["large", "medium", "small"]
 
