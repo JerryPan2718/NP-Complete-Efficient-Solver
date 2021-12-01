@@ -1,12 +1,13 @@
-from parse import read_input_file, write_output_file
+import sys
 import os
+sys.path.insert(1, os.path.join(sys.path[0], '..'))
+from parse import read_input_file, write_output_file
 import random
 import math
 from exp_utils import get_logger
 import datetime
 import numpy as np
 import pickle
-import time
 
 
 # random.seed(123)
@@ -15,8 +16,6 @@ now = datetime.datetime.now()
 logging = get_logger(os.path.join(work_dir, now.strftime('%Y-%m-%d %H:%M:%S') + ' log.txt'))
 
 total_benefit = 0
-
-
 
 def solve(tasks, input_path):
     """
@@ -32,16 +31,17 @@ def solve(tasks, input_path):
     best_plan = opt[0]
     best_plan_benefit = opt[1]
     opt_changed = False
+    epoch_idx = 0
 
     ####################################################################################################
-    epoch_idx = 0
+    
 
     def fitness(output_tasks, tasks):
         MAX_TIME = 1440
         time_cum = 0
         benefit_cum = 0
         idx = 0
-        while idx < len(tasks) and time_cum + tasks[output_tasks[idx] - 1].duration <= MAX_TIME:
+        while idx < len(output_tasks) and time_cum + tasks[output_tasks[idx] - 1].duration <= MAX_TIME:
             id = output_tasks[idx] - 1
             time_cum = time_cum + tasks[id].duration
             if time_cum <= tasks[id].deadline:
@@ -61,72 +61,69 @@ def solve(tasks, input_path):
             time_cum = time_cum + tasks[id].duration
             processed_output_taskId.append(tasks[id].task_id)
             idx += 1
+        total_time = sum([tasks[taskId-1].duration for taskId in processed_output_taskId])
         return processed_output_taskId
 
-    same = 0
-    count = 0
     curr_output_tasks = [i for i in range(1, len(tasks)+1)]
-    random.shuffle(curr_output_tasks)
-    start = time.time()
-    early_abort_epoch = 20
+    curr_benefit = fitness(curr_output_tasks, tasks)
+    exit_curr_loop = False
     while True:
         curr_benefit = fitness(curr_output_tasks, tasks)
-        exit_curr_loop = False
+        for i in range(len(tasks)):
+            for j in range(i+5, len(tasks)):
+                for k in range(j+5, len(tasks)):
+                    new_output_tasks1 = curr_output_tasks[:]
+                    new_output_tasks2 = curr_output_tasks[:]
+                    new_output_tasks3 = curr_output_tasks[:]
+                    new_output_tasks4 = curr_output_tasks[:]
+                    new_output_tasks5 = curr_output_tasks[:]
 
-        i, j, k = random.sample(range(1, len(tasks)), 3)
-        curr_output_tasks[i], curr_output_tasks[j], curr_output_tasks[k] = curr_output_tasks[k], curr_output_tasks[i], curr_output_tasks[j]
-        
-        while True:
-            curr_benefit = fitness(curr_output_tasks, tasks)
-            for i in range(len(tasks)):
-                for j in range(i+1, len(tasks)):
-                    less_raito = tasks[curr_output_tasks[j]-1].get_ratio() < tasks[curr_output_tasks[i]-1].get_ratio()
-                    later_ddl = tasks[curr_output_tasks[j]-1].get_deadline() > tasks[curr_output_tasks[i]-1].get_deadline()
-                    if less_raito and later_ddl:
-                        continue
-                    new_output_task = curr_output_tasks[:]
-                    new_output_task[i], new_output_task[j] = new_output_task[j], new_output_task[i]
-                    new_benefit = fitness(new_output_task, tasks)
-                    if new_benefit > curr_benefit:
-                        curr_output_tasks = new_output_task
-                        curr_benefit = new_benefit
-                        exit_curr_loop = True
-                        break
+                    new_output_tasks1[i], new_output_tasks1[j], new_output_tasks1[k] = new_output_tasks1[j], new_output_tasks1[i], new_output_tasks1[k]
+                    new_output_tasks2[i], new_output_tasks2[j], new_output_tasks2[k] = new_output_tasks2[k], new_output_tasks2[j], new_output_tasks2[i]
+                    new_output_tasks3[i], new_output_tasks3[j], new_output_tasks3[k] = new_output_tasks3[i], new_output_tasks3[k], new_output_tasks3[j]
+                    new_output_tasks4[i], new_output_tasks4[j], new_output_tasks4[k] = new_output_tasks4[j], new_output_tasks4[k], new_output_tasks4[i]
+                    new_output_tasks5[i], new_output_tasks5[j], new_output_tasks5[k] = new_output_tasks5[k], new_output_tasks5[i], new_output_tasks5[j]
+
+
+                    new_benefit1 = fitness(new_output_tasks1, tasks)
+                    new_benefit2 = fitness(new_output_tasks2, tasks)
+                    new_benefit3 = fitness(new_output_tasks3, tasks)
+                    new_benefit4 = fitness(new_output_tasks4, tasks)
+                    new_benefit5 = fitness(new_output_tasks5, tasks)
+
+                    new_benefits = [new_benefit1, new_benefit2, new_benefit3, new_benefit4, new_benefit5]
+                    new_output_tasks = [new_output_tasks1, new_output_tasks2, new_output_tasks3, new_output_tasks4, new_output_tasks5]
+
+                    for i in range(len(new_benefits)):
+                        new_benefit = new_benefits[i]
+                        new_output_task = new_output_tasks[i]
+                        if new_benefit > curr_benefit:
+                            curr_output_tasks = new_output_task[:]
+                            curr_benefit = new_benefit
+                            exit_curr_loop = True
+                            break
                 if exit_curr_loop:
                     break
-            if exit_curr_loop == False:
+            if exit_curr_loop:
                 break
-            epoch_idx += 1
-            exit_curr_loop = False
-        if curr_benefit > best_plan_benefit:
-            best_plan_benefit = curr_benefit
-            best_plan = curr_output_tasks
-            same = 0
-        else:
-            same += 1
-        if same > early_abort_epoch:
+        if exit_curr_loop == False:
             break
-        end = time.time()
-        elapsed = end - start
-        count = count + 1
-        # print(f"{count}. epoch: {epoch_idx} benefit: {curr_benefit} time: {elapsed} best: {best_plan_benefit}")
-        epoch_idx = 0
-
-    end = time.time()
-    elapsed = end - start
-    best_plan = postprocessing(best_plan, tasks)
-    opt_dict[input_path] = (best_plan, best_plan_benefit)
-
-    print(f"benefit: {best_plan_benefit} time: {elapsed}")
-
+        epoch_idx += 1
+        exit_curr_loop = False
+        # print(f"epoch {epoch_idx}: benefit {curr_benefit}")
+    if curr_benefit > best_plan_benefit:
+        opt_changed = True
+        best_plan_benefit = curr_benefit
+        best_plan = postprocessing(curr_output_tasks, tasks)
+    if opt_changed:
+        opt_dict[input_path] = (best_plan, best_plan_benefit)
+    print(f"epoch {epoch_idx}: benefit {best_plan_benefit}")
     return best_plan, best_plan_benefit
     
-    
-
 
 inputs_categories = ["large", "medium", "small"]
 
-# print(os.listdir('inputs/'))
+print(os.listdir('inputs/'))
 
 # Load optimal output
 opt_dict = {}
@@ -145,21 +142,9 @@ for inputs_category in inputs_categories:
         tasks = read_input_file(input_path)
         output, benefit = solve(tasks, input_path)
         total_benefit = total_benefit + benefit
-        
+        print(output_path)
         write_output_file(output_path, output)
         task_idx += 1
-
-# task_idx = 0
-# inputs_category = "large"
-# file_name = "large-1.in"
-# input_path = 'inputs/' + inputs_category + "/" + file_name
-# print(f"task {task_idx}: {input_path}")
-# output_path = 'outputs/' + inputs_category + "/" + file_name[:-3] + '.out'
-# tasks = read_input_file(input_path)
-# output, benefit = solve(tasks, input_path)
-# total_benefit = total_benefit + benefit
-
-write_output_file(output_path, output)
 
 logging(str(total_benefit))
 
