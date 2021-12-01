@@ -147,48 +147,48 @@ optimized_input = { "small-5.in", "small-54.in","small-57.in", "small-75.in",
                     "medium-111.in", "medium-132.in", "medium-139.in", "medium-192.in", "medium-267.in", 
                     "large-5.in", "large-57.in", "large-69.in", "large-75.in", 
                     "large-132.in" , "large-139.in", "large-192.in" }
+#task_idx = 1
+#while True:
+ #   for inputs_category in inputs_categories:
+  #      for file_name in os.listdir(os.path.join('inputs/', inputs_category)):
+   #         if file_name[0] == ".":
+    #            continue
+     #       if (file_name in optimized_input):
+      #          continue
+       #     input_path = 'inputs/' + inputs_category + "/" + file_name
+        #    print(f"{task_idx}. {file_name[:-3]}")
+         #   output_path = 'outputs/' + inputs_category + "/" + file_name[:-3] + '.out'
+          #  tasks = read_input_file(input_path)
+           # output, benefit = solve(tasks, input_path)
+       #     total_benefit = total_benefit + benefit
+#
+ #           with open('optimum_output.pickle', 'wb') as f:
+  #              pickle.dump(opt_dict, f)
+   #         write_output_file(output_path, output)
+    #        task_idx += 1
+ #   total_end = time.time()
+  #  total_elapsed = total_end - total_start
+   # print(f"DONE! Total Benifit: {total_benefit} Total Time: {total_elapsed}")
+   # total_benefit = 0
+
+
 task_idx = 1
 while True:
-    for inputs_category in inputs_categories:
-        for file_name in os.listdir(os.path.join('inputs/', inputs_category)):
-            if file_name[0] == ".":
-                continue
-            if (file_name in optimized_input):
-                continue
-            input_path = 'inputs/' + inputs_category + "/" + file_name
-            print(f"{task_idx}. {file_name[:-3]}")
-            output_path = 'outputs/' + inputs_category + "/" + file_name[:-3] + '.out'
-            tasks = read_input_file(input_path)
-            output, benefit = solve(tasks, input_path)
-            total_benefit = total_benefit + benefit
+     total_benefit = 0
+     inputs_category = "large"
+     file_name = "large-181.in"
+     input_path = 'inputs/' + inputs_category + "/" + file_name
+     print(f"task {task_idx}: {input_path}")
+     output_path = 'outputs/' + inputs_category + "/" + file_name[:-3] + '.out'
+     tasks = read_input_file(input_path)
 
-            with open('optimum_output.pickle', 'wb') as f:
-                pickle.dump(opt_dict, f)
-            write_output_file(output_path, output)
-            task_idx += 1
-    total_end = time.time()
-    total_elapsed = total_end - total_start
-    print(f"DONE! Total Benifit: {total_benefit} Total Time: {total_elapsed}")
-    total_benefit = 0
+     output, benefit= solve(tasks, input_path)
+     total_benefit = total_benefit + benefit
 
-
-# task_idx = 1
-# while True:
-#     total_benefit = 0
-#     inputs_category = "small"
-#     file_name = "small-27.in"
-#     input_path = 'inputs/' + inputs_category + "/" + file_name
-#     print(f"task {task_idx}: {input_path}")
-#     output_path = 'outputs/' + inputs_category + "/" + file_name[:-3] + '.out'
-#     tasks = read_input_file(input_path)
-
-#     output, benefit= solve(tasks, input_path)
-#     total_benefit = total_benefit + benefit
-
-#     with open('optimum_output.pickle', 'wb') as f:
-#         pickle.dump(opt_dict, f)
-#     write_output_file(output_path, output)
-#     task_idx += 1
+     with open('optimum_output.pickle', 'wb') as f:
+         pickle.dump(opt_dict, f)
+     write_output_file(output_path, output)
+     task_idx += 1
 
 # Here's an example of how to run your solver.
 # if __name__ == '__main__':

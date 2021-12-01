@@ -78,7 +78,7 @@ def solve(tasks, input_path):
     # curr_output_tasks = [task.task_id for task in tasks_greedy]
     # curr_output_tasks = []
     ############################## TO CHANGE ############################################################
-    early_abort_epoch = 5
+    early_abort_epoch = 3
     start = time.time()
     while True:
         curr_benefit = fitness(curr_output_tasks, tasks)
@@ -143,7 +143,7 @@ optimized_input = { "small-111.in", "small-5.in", "small-57.in", "small-75.in", 
                     "medium-111.in", "medium-132.in", "medium-139.in", "medium-192.in", "medium-267.in", "large-5.in", "large-57.in", "large-69.in", 
                     "large-75.in", "large-132.in" , "large-139.in", "large-192.in" }
 task_idx = 1
-while True:
+while False:
     for inputs_category in inputs_categories:
         for file_name in os.listdir(os.path.join('inputs/', inputs_category)):
             if file_name[0] == ".":
@@ -167,23 +167,23 @@ while True:
     total_benefit = 0
 
 
-# task_idx = 1
-# while True:
-#     total_benefit = 0
-#     inputs_category = "small"
-#     file_name = "small-27.in"
-#     input_path = 'inputs/' + inputs_category + "/" + file_name
-#     print(f"task {task_idx}: {input_path}")
-#     output_path = 'outputs/' + inputs_category + "/" + file_name[:-3] + '.out'
-#     tasks = read_input_file(input_path)
+task_idx = 1
+while True:
+     total_benefit = 0
+     inputs_category = "large"
+     file_name = "large-181.in"
+     input_path = 'inputs/' + inputs_category + "/" + file_name
+     print(f"task {task_idx}: {input_path}")
+     output_path = 'outputs/' + inputs_category + "/" + file_name[:-3] + '.out'
+     tasks = read_input_file(input_path)
 
-#     output, benefit= solve(tasks, input_path)
-#     total_benefit = total_benefit + benefit
+     output, benefit= solve(tasks, input_path)
+     total_benefit = total_benefit + benefit
 
-#     with open('optimum_output.pickle', 'wb') as f:
-#         pickle.dump(opt_dict, f)
-#     write_output_file(output_path, output)
-#     task_idx += 1
+     with open('optimum_output.pickle', 'wb') as f:
+         pickle.dump(opt_dict, f)
+     write_output_file(output_path, output)
+     task_idx += 1
 
 
 
