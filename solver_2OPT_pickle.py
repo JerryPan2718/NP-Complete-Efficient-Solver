@@ -6,7 +6,6 @@ from exp_utils import get_logger
 import datetime
 import numpy as np
 import pickle
-import time
 
 
 # random.seed(123)
@@ -61,64 +60,42 @@ def solve(tasks, input_path):
             time_cum = time_cum + tasks[id].duration
             processed_output_taskId.append(tasks[id].task_id)
             idx += 1
+        total_time = sum([tasks[taskId-1].duration for taskId in processed_output_taskId])
         return processed_output_taskId
 
-    same = 0
-    count = 0
-    curr_output_tasks = [i for i in range(1, len(tasks)+1)]
-    random.shuffle(curr_output_tasks)
-    start = time.time()
-    early_abort_epoch = 20
+    if input_path in opt_dict:
+        curr_output_task, curr_benefit = opt_dict[input_path]
+    else:
+        curr_output_task = random.shuffle([i for i in range(1, len(tasks)+1)])
+        curr_benefit = fitness(curr_output_task, tasks)
+    exit_curr_loop = False
     while True:
-        curr_benefit = fitness(curr_output_tasks, tasks)
-        exit_curr_loop = False
-
-        i, j, k = random.sample(range(1, len(tasks)), 3)
-        curr_output_tasks[i], curr_output_tasks[j], curr_output_tasks[k] = curr_output_tasks[k], curr_output_tasks[i], curr_output_tasks[j]
-        
-        while True:
-            curr_benefit = fitness(curr_output_tasks, tasks)
-            for i in range(len(tasks)):
-                for j in range(i+1, len(tasks)):
-                    less_raito = tasks[curr_output_tasks[j]-1].get_ratio() < tasks[curr_output_tasks[i]-1].get_ratio()
-                    later_ddl = tasks[curr_output_tasks[j]-1].get_deadline() > tasks[curr_output_tasks[i]-1].get_deadline()
-                    if less_raito and later_ddl:
-                        continue
-                    new_output_task = curr_output_tasks[:]
-                    new_output_task[i], new_output_task[j] = new_output_task[j], new_output_task[i]
-                    new_benefit = fitness(new_output_task, tasks)
-                    if new_benefit > curr_benefit:
-                        curr_output_tasks = new_output_task
-                        curr_benefit = new_benefit
-                        exit_curr_loop = True
-                        break
-                if exit_curr_loop:
+        # print(f"epoch {epoch_idx}: benefit {curr_benefit}")
+        curr_benefit = fitness(curr_output_task, tasks)
+        for i in range(len(tasks)):
+            for j in range(i+1, len(tasks)):
+                new_output_task = curr_output_task[:]
+                new_output_task[i], new_output_task[j] = new_output_task[j], new_output_task[i]
+                new_benefit = fitness(new_output_task, tasks)
+                if new_benefit > curr_benefit:
+                    curr_output_task = new_output_task
+                    curr_benefit = new_benefit
+                    exit_curr_loop = True
                     break
-            if exit_curr_loop == False:
+            if exit_curr_loop:
                 break
-            epoch_idx += 1
-            exit_curr_loop = False
-        if curr_benefit > best_plan_benefit:
-            best_plan_benefit = curr_benefit
-            best_plan = curr_output_tasks
-            same = 0
-        else:
-            same += 1
-        if same > early_abort_epoch:
+        if exit_curr_loop == False:
             break
-        end = time.time()
-        elapsed = end - start
-        count = count + 1
-        # print(f"{count}. epoch: {epoch_idx} benefit: {curr_benefit} time: {elapsed} best: {best_plan_benefit}")
-        epoch_idx = 0
-
-    end = time.time()
-    elapsed = end - start
-    best_plan = postprocessing(best_plan, tasks)
-    opt_dict[input_path] = (best_plan, best_plan_benefit)
-
-    print(f"benefit: {best_plan_benefit} time: {elapsed}")
-
+        epoch_idx += 1
+        exit_curr_loop = False
+        
+    if curr_benefit > best_plan_benefit:
+        opt_changed = True
+        best_plan_benefit = curr_benefit
+        best_plan = postprocessing(curr_output_task, tasks)
+    if opt_changed:
+        opt_dict[input_path] = (best_plan, best_plan_benefit)
+    print(f"epoch {epoch_idx}: benefit {best_plan_benefit}")
     return best_plan, best_plan_benefit
     
     
@@ -126,7 +103,7 @@ def solve(tasks, input_path):
 
 inputs_categories = ["large", "medium", "small"]
 
-# print(os.listdir('inputs/'))
+print(os.listdir('inputs/'))
 
 # Load optimal output
 opt_dict = {}
@@ -149,17 +126,6 @@ for inputs_category in inputs_categories:
         write_output_file(output_path, output)
         task_idx += 1
 
-# task_idx = 0
-# inputs_category = "large"
-# file_name = "large-1.in"
-# input_path = 'inputs/' + inputs_category + "/" + file_name
-# print(f"task {task_idx}: {input_path}")
-# output_path = 'outputs/' + inputs_category + "/" + file_name[:-3] + '.out'
-# tasks = read_input_file(input_path)
-# output, benefit = solve(tasks, input_path)
-# total_benefit = total_benefit + benefit
-
-write_output_file(output_path, output)
 
 logging(str(total_benefit))
 

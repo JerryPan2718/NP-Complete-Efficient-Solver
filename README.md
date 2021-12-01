@@ -41,8 +41,6 @@ Algorithm Brainstorms:
                 - curr_score = new_score
 4. GRASP
 5. Submodularity
-6. DP
-- 
 
 Experiments:
 1. Genetic Algorithm (solver_Genetic.py)
@@ -68,10 +66,18 @@ Experiments:
 
 5. Reduce to ILP (solver_ILP.py)
 
-6. Batch DP
+6. 2/3 OPT naive (20211129)
+- total_benfit = 3504796.155992973
 
-7. Bucket DP
 
+2/3 OPT Approach:
+- Done:
+    1. Naive implementation of 2/3 OPT with 1 to n unchanged initial output
+    2. random.shuffle() initial output with n initializations
+        - This multiple initialization could potentially turn the local maximum of 2/3 OPT into global maximum
+    3. Early abort based on change of fitness() reduces runtime
+- Todo:
+    1. 
 
 
 

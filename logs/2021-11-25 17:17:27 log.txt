@@ -1,2 +1,0 @@
-=== Gen 0 best solutions with fitness 1872.4495357747908 ===
-=== Gen 1 best solutions with fitness 2242.144101836978 ===
