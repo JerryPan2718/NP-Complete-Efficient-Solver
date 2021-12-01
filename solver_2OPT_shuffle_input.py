@@ -33,16 +33,16 @@ def solve(tasks, input_path):
     best_plan = opt[0]
     best_plan_benefit = opt[1]
     opt_changed = False
-
     ####################################################################################################
     epoch_idx = 0
 
     def fitness(output_tasks, tasks):
+        assert len(output_tasks) == len(set(output_tasks)), "output_tasks contain duplicates!"
         MAX_TIME = 1440
         time_cum = 0
         benefit_cum = 0
         idx = 0
-        while idx < len(tasks) and time_cum + tasks[output_tasks[idx] - 1].duration <= MAX_TIME:
+        while idx < len(output_tasks) and time_cum + tasks[output_tasks[idx] - 1].duration <= MAX_TIME:
             id = output_tasks[idx] - 1
             time_cum = time_cum + tasks[id].duration
             if time_cum <= tasks[id].deadline:
@@ -67,15 +67,15 @@ def solve(tasks, input_path):
     same = 0
     count = 0
 
-    ############################## Initial Input ################################################
+    ############################## Initial Input & Config ################################################
     curr_output_tasks = [i for i in range(1, len(tasks)+1)]
     random.shuffle(curr_output_tasks)
     # tasks_greedy = sorted(tasks, key = lambda task: (round(-task.perfect_benefit / task.duration, 1), task.deadline))
     # curr_output_tasks = [task.task_id for task in tasks_greedy]
     # curr_output_tasks = []
-    ############################## TO CHANGE ####################################################
-    start = time.time()
     early_abort_epoch = 20
+    ############################## TO CHANGE ############################################################
+    start = time.time()
     while True:
         curr_benefit = fitness(curr_output_tasks, tasks)
         exit_curr_loop = False
