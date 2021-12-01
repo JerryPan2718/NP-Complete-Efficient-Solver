@@ -68,10 +68,10 @@ def solve(tasks, input_path):
     count = 0
 
     ############################## Initial Input ################################################
-    # curr_output_tasks = [i for i in range(1, len(tasks)+1)]
-    # random.shuffle(curr_output_tasks)
-    tasks_greedy = sorted(tasks, key = lambda task: (round(-task.perfect_benefit / task.duration, 1), task.deadline))
-    curr_output_tasks = [task.task_id for task in tasks_greedy]
+    curr_output_tasks = [i for i in range(1, len(tasks)+1)]
+    random.shuffle(curr_output_tasks)
+    # tasks_greedy = sorted(tasks, key = lambda task: (round(-task.perfect_benefit / task.duration, 1), task.deadline))
+    # curr_output_tasks = [task.task_id for task in tasks_greedy]
     # curr_output_tasks = []
     ############################## TO CHANGE ####################################################
     start = time.time()
