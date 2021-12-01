@@ -76,9 +76,11 @@ Experiments:
     2. random.shuffle() initial output with n initializations
         - This multiple initialization could potentially turn the local maximum of 2/3 OPT into global maximum
     3. Early abort based on change of fitness() reduces runtime
+    4. Initial tasks from sort greedy and local greedy + shuffle
+    5. Initial tasks from pickle dictionary + shuffle
 - Todo:
     1. Only calculate the fitness of swapped tasks (low priority)
-    2. Initial tasks from greedy
+    2. 
     3. 
 
 
