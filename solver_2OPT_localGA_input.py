@@ -28,6 +28,7 @@ def solve(tasks, input_path):
     """
     ############################################## CONFIG ##############################################    
     global opt_dict
+    global full_opt_dict
     MAX_TIME = 1440
     opt = opt_dict.get(input_path, [None, float('-inf')])
     best_plan = opt[0]
@@ -159,6 +160,7 @@ def solve(tasks, input_path):
 
     end = time.time()
     elapsed = end - start
+    full_opt_dict[input_path] = (best_plan[:], best_plan_benefit)
     best_plan = postprocessing(best_plan, tasks)
     opt_dict[input_path] = (best_plan, best_plan_benefit)
 
@@ -178,6 +180,11 @@ opt_dict = {}
 if os.path.exists("optimum_output.pickle"):
     with open("optimum_output.pickle", "rb") as f:
         opt_dict = pickle.load(f)
+
+full_opt_dict = {}
+if os.path.exists("full_optimum_output.pickle"):
+    with open("full_optimum_output.pickle") as f:
+        full_opt_dict = pickle.load(f)
 
 task_idx = 0
 for inputs_category in inputs_categories:
@@ -210,6 +217,9 @@ logging(str(total_benefit))
 
 with open('optimum_output.pickle', 'wb') as f:
     pickle.dump(opt_dict, f)
+
+with open('full_optimum_output.pickle', 'wb') as f:
+    pickle.dump(full_opt_dict, f)
 
 # Here's an example of how to run your solver.
 # if __name__ == '__main__':
