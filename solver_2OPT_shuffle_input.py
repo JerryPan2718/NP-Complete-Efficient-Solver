@@ -141,30 +141,30 @@ if os.path.exists("optimum_output.pickle"):
     with open("optimum_output.pickle", "rb") as f:
         opt_dict = pickle.load(f)
 
-task_idx = 0
-for inputs_category in inputs_categories:
-    for file_name in os.listdir(os.path.join('inputs/', inputs_category)):
-        if file_name[0] == ".":
-            continue
-        input_path = 'inputs/' + inputs_category + "/" + file_name
-        print(f"task {task_idx}: {input_path}")
-        output_path = 'outputs/' + inputs_category + "/" + file_name[:-3] + '.out'
-        tasks = read_input_file(input_path)
-        output, benefit = solve(tasks, input_path)
-        total_benefit = total_benefit + benefit
-        
-        write_output_file(output_path, output)
-        task_idx += 1
-
 # task_idx = 0
-# inputs_category = "large"
-# file_name = "large-1.in"
-# input_path = 'inputs/' + inputs_category + "/" + file_name
-# print(f"task {task_idx}: {input_path}")
-# output_path = 'outputs/' + inputs_category + "/" + file_name[:-3] + '.out'
-# tasks = read_input_file(input_path)
-# output, benefit = solve(tasks, input_path)
-# total_benefit = total_benefit + benefit
+# for inputs_category in inputs_categories:
+#     for file_name in os.listdir(os.path.join('inputs/', inputs_category)):
+#         if file_name[0] == ".":
+#             continue
+#         input_path = 'inputs/' + inputs_category + "/" + file_name
+#         print(f"task {task_idx}: {input_path}")
+#         output_path = 'outputs/' + inputs_category + "/" + file_name[:-3] + '.out'
+#         tasks = read_input_file(input_path)
+#         output, benefit = solve(tasks, input_path)
+#         total_benefit = total_benefit + benefit
+        
+#         write_output_file(output_path, output)
+#         task_idx += 1
+
+task_idx = 0
+inputs_category = "large"
+file_name = "large-1.in"
+input_path = 'inputs/' + inputs_category + "/" + file_name
+print(f"task {task_idx}: {input_path}")
+output_path = 'outputs/' + inputs_category + "/" + file_name[:-3] + '.out'
+tasks = read_input_file(input_path)
+output, benefit = solve(tasks, input_path)
+total_benefit = total_benefit + benefit
 
 write_output_file(output_path, output)
 
