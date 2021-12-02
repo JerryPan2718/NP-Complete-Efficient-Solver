@@ -146,7 +146,7 @@ def solve(tasks, input_path):
             exit_curr_loop = False
         if curr_benefit > best_plan_benefit:
             best_plan_benefit = curr_benefit
-            best_plan = curr_output_tasks
+            best_plan = curr_output_tasks[:]
             unchanged_iteration = 0
         else:
             unchanged_iteration += 1
