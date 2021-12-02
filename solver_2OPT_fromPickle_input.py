@@ -86,7 +86,7 @@ def solve(tasks, input_path):
     curr_output_tasks = curr_output_tasks + to_append_for_curr_output_tasks
     ############################## TO CHANGE ####################################################
     start = time.time()
-    early_abort_epoch = 5
+    early_abort_epoch = 2
     while True:
         curr_benefit = fitness(curr_output_tasks, tasks)
         exit_curr_loop = False
@@ -124,10 +124,10 @@ def solve(tasks, input_path):
             same += 1
         if same > early_abort_epoch:
             break
-        # end = time.time()
-        # elapsed = end - start
+        end = time.time()
+        elapsed = end - start
         count = count + 1
-        # print(f"{count}. epoch: {epoch_idx} benefit: {curr_benefit} time: {elapsed} best: {temp_best_benefit}")
+        print(f"{count}. epoch: {epoch_idx} benefit: {curr_benefit} time: {elapsed} best: {temp_best_benefit}")
         epoch_idx = 0
     
     end = time.time()
@@ -178,7 +178,7 @@ task_idx = 1
 while True:
      total_benefit = 0
      inputs_category = "large"
-     file_name = "large-181.in"
+     file_name = "large-267.in"
      input_path = 'inputs/' + inputs_category + "/" + file_name
      print(f"task {task_idx}: {input_path}")
      output_path = 'outputs/' + inputs_category + "/" + file_name[:-3] + '.out'
