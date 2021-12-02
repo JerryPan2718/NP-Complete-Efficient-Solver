@@ -1,5 +1,5 @@
 __pycache__/
-outputs/small/*
-outputs/medium/*
-outputs/large/*
+# outputs/small/*
+# outputs/medium/*
+# outputs/large/*
 logs/*
