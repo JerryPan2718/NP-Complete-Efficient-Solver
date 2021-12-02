@@ -81,9 +81,10 @@ def solve(tasks, input_path):
             to_append_for_curr_output_tasks.append(task.task_id)
     random.shuffle(to_append_for_curr_output_tasks)
     curr_output_tasks = curr_output_tasks + to_append_for_curr_output_tasks
-    ############################## TO CHANGE ####################################################
     start = time.time()
     early_abort_epoch = 20
+    ############################## TO CHANGE ####################################################
+    
     while True:
         curr_benefit = fitness(curr_output_tasks, tasks)
         exit_curr_loop = False
@@ -155,30 +156,34 @@ if os.path.exists("full_optimum_output.pickle"):
     with open("full_optimum_output.pickle") as f:
         full_opt_dict = pickle.load(f)
 
-task_idx = 0
-for inputs_category in inputs_categories:
-    for file_name in os.listdir(os.path.join('inputs/', inputs_category)):
-        if file_name[0] == ".":
-            continue
-        input_path = 'inputs/' + inputs_category + "/" + file_name
-        print(f"task {task_idx}: {input_path}")
-        output_path = 'outputs/' + inputs_category + "/" + file_name[:-3] + '.out'
-        tasks = read_input_file(input_path)
-        output, benefit = solve(tasks, input_path)
-        total_benefit = total_benefit + benefit
-        
-        write_output_file(output_path, output)
-        task_idx += 1
-
 # task_idx = 0
+# for inputs_category in inputs_categories:
+#     for file_name in os.listdir(os.path.join('inputs/', inputs_category)):
+#         if file_name[0] == ".":
+#             continue
+#         input_path = 'inputs/' + inputs_category + "/" + file_name
+#         print(f"task {task_idx}: {input_path}")
+#         output_path = 'outputs/' + inputs_category + "/" + file_name[:-3] + '.out'
+#         tasks = read_input_file(input_path)
+#         output, benefit = solve(tasks, input_path)
+#         total_benefit = total_benefit + benefit
+        
+#         write_output_file(output_path, output)
+#         task_idx += 1
+
+task_names = ["large-74.in", "medium-172.in", "medium-73.in", "small-73.in", "large-267.in", "large-42.in", "large-54.in","medium-102.in", "medium-54.in", "medium-79.in"]
+
+task_idx = 0
 # inputs_category = "large"
-# file_name = "large-1.in"
-# input_path = 'inputs/' + inputs_category + "/" + file_name
-# print(f"task {task_idx}: {input_path}")
-# output_path = 'outputs/' + inputs_category + "/" + file_name[:-3] + '.out'
-# tasks = read_input_file(input_path)
-# output, benefit = solve(tasks, input_path)
-# total_benefit = total_benefit + benefit
+for task_name in task_names:
+    # file_name = "large-1.in"
+    input_path = 'inputs/' + task_name.split("-")[0] + "/" + task_name
+    print(f"task {task_idx}: {input_path}")
+    output_path = 'outputs/' + task_name.split("-")[0] + "/" + task_name[:-3] + '.out'
+    tasks = read_input_file(input_path)
+    output, benefit = solve(tasks, input_path)
+    total_benefit = total_benefit + benefit
+    task_idx += 1
 
 write_output_file(output_path, output)
 
