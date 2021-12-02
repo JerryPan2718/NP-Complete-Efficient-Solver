@@ -1,26 +1,3 @@
-'''
-sBest ← s0
-bestCandidate ← s0
-tabuList ← []
-tabuList.push(s0)
-while (not stoppingCondition())
-    sNeighborhood ← getNeighbors(bestCandidate)
-    bestCandidate ← sNeighborhood[0]
-    for (sCandidate in sNeighborhood)
-        if ( (not tabuList.contains(sCandidate)) and (fitness(sCandidate) > fitness(bestCandidate)) )
-            bestCandidate ← sCandidate
-        end
-    end
-    if (fitness(bestCandidate) > fitness(sBest))
-        sBest ← bestCandidate
-    end
-    tabuList.push(bestCandidate)
-    if (tabuList.size > maxTabuSize)
-        tabuList.removeFirst()
-    end
-end
-return sBest
-'''
 from parse import read_input_file, write_output_file
 import os
 import random
@@ -50,6 +27,7 @@ def solve(tasks, input_path):
     """
     ############################################## CONFIG ##############################################    
     global opt_dict
+    global full_opt_dict
     MAX_TIME = 1440
     opt = opt_dict.get(input_path, [None, float('-inf')])
     best_plan = opt[0]
@@ -132,6 +110,7 @@ def solve(tasks, input_path):
         iteration_num += 1
         print(f"{iteration_num}. benefit: {fitness(best_plan, tasks)}")
 
+    full_opt_dict[input_path] = (best_plan[:], best_plan_benefit)
     best_plan = postprocessing(best_plan, tasks)
     best_plan_benefit = fitness(best_plan, tasks)
     if best_plan_benefit > opt_dict[input_path][1]:
@@ -148,6 +127,11 @@ opt_dict = {}
 if os.path.exists("optimum_output.pickle"):
     with open("optimum_output.pickle", "rb") as f:
         opt_dict = pickle.load(f)
+
+full_opt_dict = {}
+if os.path.exists("full_optimum_output.pickle"):
+    with open("full_optimum_output.pickle") as f:
+        full_opt_dict = pickle.load(f)
 
 task_idx = 0
 for inputs_category in inputs_categories:
@@ -180,6 +164,9 @@ logging(str(total_benefit))
 
 with open('optimum_output.pickle', 'wb') as f:
     pickle.dump(opt_dict, f)
+
+with open('full_optimum_output.pickle', 'wb') as f:
+    pickle.dump(full_opt_dict, f)
 
 # Here's an example of how to run your solver.
 # if __name__ == '__main__':
