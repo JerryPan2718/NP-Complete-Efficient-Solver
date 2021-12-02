@@ -206,5 +206,3 @@ while True:
 #         tasks = read_input_file(input_path)
 #         output = solve(tasks)
 #         write_output_file(output_path, output)
-
->>>>>>> a82057634c19a6d50003193b0a325674f2f2c37c
