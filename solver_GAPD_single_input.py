@@ -133,28 +133,29 @@ if os.path.exists("optimum_output.pickle"):
     with open("optimum_output.pickle", "rb") as f:
         opt_dict = pickle.load(f)
 
-# for inputs_category in inputs_categories:
-#     for file_name in os.listdir(os.path.join('inputs/', inputs_category)):
-#         if file_name[0] == ".":
-#             continue
-#         input_path = 'inputs/' + inputs_category + "/" + file_name
-#         # print(input_path)
-#         output_path = 'outputs/' + inputs_category + "/" + file_name[:-3] + '.out'
-#         tasks = read_input_file(input_path)
-#         output, benefit = solve(tasks, input_path)
-#         total_benefit = total_benefit + benefit
-#         # print(output_path)
-#         write_output_file(output_path, output)
+for inputs_category in inputs_categories:
+    for file_name in os.listdir(os.path.join('inputs/', inputs_category)):
+        if file_name[0] == ".":
+            continue
+        # print(file_name)
+        input_path = 'inputs/' + inputs_category + "/" + file_name
+        # print(input_path)
+        output_path = 'outputs/' + inputs_category + "/" + file_name[:-3] + '.out'
+        tasks = read_input_file(input_path)
+        output, benefit = solve(tasks, input_path)
+        total_benefit = total_benefit + benefit
+        # print(output_path)
+        write_output_file(output_path, output)
 
 
-input_path = 'inputs/' + "small" + "/" + "small-1.in"
-# print(input_path)
-output_path = 'outputs/' + "small" + "/" + "small-1.out"
-tasks = read_input_file(input_path)
-output, benefit = solve(tasks, input_path)
-total_benefit = total_benefit + benefit
-# print(output_path)
-write_output_file(output_path, output)
+# input_path = 'inputs/' + "small" + "/" + "small-1.in"
+# # print(input_path)
+# output_path = 'outputs/' + "small" + "/" + "small-1.out"
+# tasks = read_input_file(input_path)
+# output, benefit = solve(tasks, input_path)
+# total_benefit = total_benefit + benefit
+# # print(output_path)
+# write_output_file(output_path, output)
 
 logging(str(total_benefit))
 

@@ -5,7 +5,9 @@ if __name__ == '__main__':
     opt_dict_list = []
     for file_name in os.listdir(os.path.join("optimal_pickles")):
         with open(os.path.join("optimal_pickles", file_name), "rb") as f:
-            opt_dict_list.append(pickle.load(f))
+            if file_name[0] != ".":
+                print(os.path.join("optimal_pickles", file_name))
+                opt_dict_list.append(pickle.load(f))
 
     if opt_dict_list:
         best_output = opt_dict_list[0]

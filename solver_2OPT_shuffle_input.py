@@ -9,15 +9,20 @@ import numpy as np
 import pickle
 import time
 
+from get_rank import get_rank
+
 
 # random.seed(123)
 work_dir = "./logs"
 now = datetime.datetime.now()
-logging = get_logger(os.path.join(work_dir, now.strftime('%Y-%m-%d %H:%M:%S') + ' log.txt'))
-
+logging = get_logger(os.path.join(work_dir, now.strftime('%Y-%m-%d %H%M%S') + ' log.txt'))
 total_benefit = 0
-
-
+total_start = time.time
+# Load optimal output
+opt_dict = {}
+if os.path.exists("optimum_output.pickle"):
+    with open("optimum_output.pickle", "rb") as f:
+        opt_dict = pickle.load(f)
 
 def solve(tasks, input_path):
     """
@@ -28,12 +33,12 @@ def solve(tasks, input_path):
     """
     ############################################## CONFIG ##############################################    
     global opt_dict
-    global full_opt_dict
     MAX_TIME = 1440
     opt = opt_dict.get(input_path, [None, float('-inf')])
     best_plan = opt[0]
     best_plan_benefit = opt[1]
-    opt_changed = False
+    temp_best_plan = []
+    temp_best_benefit = 0
     ####################################################################################################
     epoch_idx = 0
 
@@ -65,7 +70,7 @@ def solve(tasks, input_path):
             idx += 1
         return processed_output_taskId
 
-    unchanged_iteration = 0
+    same = 0
     count = 0
 
     ############################## Initial Input & Config ################################################
@@ -74,8 +79,8 @@ def solve(tasks, input_path):
     # tasks_greedy = sorted(tasks, key = lambda task: (round(-task.perfect_benefit / task.duration, 1), task.deadline))
     # curr_output_tasks = [task.task_id for task in tasks_greedy]
     # curr_output_tasks = []
-    early_abort_epoch = 20
     ############################## TO CHANGE ############################################################
+    early_abort_epoch = 5
     start = time.time()
     while True:
         curr_benefit = fitness(curr_output_tasks, tasks)
@@ -106,82 +111,88 @@ def solve(tasks, input_path):
                 break
             epoch_idx += 1
             exit_curr_loop = False
-        if curr_benefit > best_plan_benefit:
-            best_plan_benefit = curr_benefit
-            best_plan = curr_output_tasks
-            unchanged_iteration = 0
+        if curr_benefit > temp_best_benefit:
+            temp_best_benefit = curr_benefit
+            temp_best_plan = curr_output_tasks[:]
+            same = 0
         else:
-            unchanged_iteration += 1
-        if unchanged_iteration > early_abort_epoch:
+            same += 1
+        if same > early_abort_epoch:
             break
-        end = time.time()
-        elapsed = end - start
+        # end = time.time()
+        # elapsed = end - start
         count = count + 1
-        print(f"{count}. epoch: {epoch_idx} benefit: {curr_benefit} time: {elapsed} best: {best_plan_benefit}")
+        # print(f"{count}. epoch: {epoch_idx} benefit: {curr_benefit} time: {elapsed} best: {temp_best_benefit}")
         epoch_idx = 0
 
     end = time.time()
     elapsed = end - start
-    full_opt_dict[input_path] = (best_plan[:], best_plan_benefit)
-    best_plan = postprocessing(best_plan, tasks)
-    opt_dict[input_path] = (best_plan, best_plan_benefit)
+    best_plan_benefit = fitness(best_plan, tasks)
+    improvement = max(temp_best_benefit - best_plan_benefit, 0)
+    if improvement > 0:
+        best_plan_benefit = temp_best_benefit
+        best_plan = postprocessing(temp_best_plan[:], tasks)
+    
+    opt_dict[input_path] = (best_plan[:], best_plan_benefit)
 
-    print(f"benefit: {best_plan_benefit} time: {elapsed}")
-
+    print(f"      Overall best: {best_plan_benefit}  Curr best: {temp_best_benefit}  Improved: {improvement}  Time: {elapsed}")
     return best_plan, best_plan_benefit
     
     
 
+inputs_categories = ["small", "medium", "large"]
+optimized_input = { "small-111.in", "small-5.in", "small-57.in", "small-75.in", "small-266.in", "medium-69.in", "medium-75.in", "medium-77.in", "medium-85.in",
+                    "medium-111.in", "medium-132.in", "medium-139.in", "medium-192.in", "medium-267.in", "large-5.in", "large-57.in", "large-69.in", 
+                    "large-75.in", "large-132.in" , "large-139.in", "large-192.in" }
 
-inputs_categories = ["large", "medium", "small"]
 
-# print(os.listdir('inputs/'))
+_, not_first, ten_plus, twenty_plus = get_rank(team_name="22222222222222222222222222222222")
 
-# Load optimal output
-opt_dict = {}
-if os.path.exists("optimum_output.pickle"):
-    with open("optimum_output.pickle", "rb") as f:
-        opt_dict = pickle.load(f)
-
-full_opt_dict = {}
-if os.path.exists("full_optimum_output.pickle"):
-    with open("full_optimum_output.pickle") as f:
-        full_opt_dict = pickle.load(f)
-
-task_idx = 0
-for inputs_category in inputs_categories:
-    for file_name in os.listdir(os.path.join('inputs/', inputs_category)):
+task_idx = 1
+while True:
+    # for inputs_category in inputs_categories:
+        # for file_name in os.listdir(os.path.join('inputs/', inputs_category)):
+    for file_name in not_first:
         if file_name[0] == ".":
             continue
-        input_path = 'inputs/' + inputs_category + "/" + file_name
-        print(f"task {task_idx}: {input_path}")
-        output_path = 'outputs/' + inputs_category + "/" + file_name[:-3] + '.out'
+        if (file_name in optimized_input):
+            continue
+        input_path = 'inputs/' + file_name.split('-')[0] + "/" + file_name + ".in"
+        print(f"{task_idx}. {file_name}")
+        output_path = 'outputs/' + file_name.split('-')[0] + "/" + file_name + '.out'
         tasks = read_input_file(input_path)
         output, benefit = solve(tasks, input_path)
         total_benefit = total_benefit + benefit
-        
+
+        with open('optimum_output.pickle', 'wb') as f:
+            pickle.dump(opt_dict, f)
         write_output_file(output_path, output)
         task_idx += 1
+    total_end = time.time()
+    total_elapsed = total_end - total_start
+    print(f"DONE! Total Benifit: {total_benefit} Total Time: {total_elapsed}")
+    total_benefit = 0
 
-# task_idx = 0
-# inputs_category = "large"
-# file_name = "large-1.in"
-# input_path = 'inputs/' + inputs_category + "/" + file_name
-# print(f"task {task_idx}: {input_path}")
-# output_path = 'outputs/' + inputs_category + "/" + file_name[:-3] + '.out'
-# tasks = read_input_file(input_path)
-# output, benefit = solve(tasks, input_path)
-# total_benefit = total_benefit + benefit
 
-write_output_file(output_path, output)
+# task_idx = 1
+# while True:
+#     total_benefit = 0
+#     inputs_category = "small"
+#     file_name = "small-27.in"
+#     input_path = 'inputs/' + inputs_category + "/" + file_name
+#     print(f"task {task_idx}: {input_path}")
+#     output_path = 'outputs/' + inputs_category + "/" + file_name[:-3] + '.out'
+#     tasks = read_input_file(input_path)
 
-logging(str(total_benefit))
+#     output, benefit= solve(tasks, input_path)
+#     total_benefit = total_benefit + benefit
 
-with open('optimum_output.pickle', 'wb') as f:
-    pickle.dump(opt_dict, f)
+#     with open('optimum_output.pickle', 'wb') as f:
+#         pickle.dump(opt_dict, f)
+#     write_output_file(output_path, output)
+#     task_idx += 1
 
-with open('full_optimum_output.pickle', 'wb') as f:
-    pickle.dump(full_opt_dict, f)
+
 
 # Here's an example of how to run your solver.
 # if __name__ == '__main__':
