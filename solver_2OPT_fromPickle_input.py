@@ -206,7 +206,6 @@ while True:
 #     write_output_file(output_path, output)
 #     task_idx += 1
 
-
 # with open('optimum_output.pickle', 'wb') as f:
 #     pickle.dump(opt_dict, f)
 
@@ -220,4 +219,3 @@ while True:
 #         tasks = read_input_file(input_path)
 #         output = solve(tasks)
 #         write_output_file(output_path, output)
-
