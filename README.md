@@ -78,11 +78,7 @@ Experiments:
     3. Early abort based on change of fitness() reduces runtime
     4. Initial tasks from sort greedy and local greedy + shuffle
     5. Initial tasks from pickle dictionary + shuffle
-- Todo:
-    1. Only calculate the fitness of swapped tasks (low priority)
-    2. 
-    3. 
-
+    6.  Only calculate the fitness of swapped tasks (low priority)
 
 
 Replicate our algorithm for submission
