@@ -85,5 +85,5 @@ Replicate our algorithm for submission
 ```
 python3 solver.py
 python3 prepare_submission.py outputs/ submission.json
-Submit the submission.json and team.txt to Gradescope
 ```
+Submit the submission.json and team.txt to Gradescope
