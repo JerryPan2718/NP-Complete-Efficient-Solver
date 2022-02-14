@@ -82,6 +82,8 @@ Experiments:
 
 
 Replicate our algorithm for submission
-1. python3 solver.py
-2. python3 prepare_submission.py outputs/ submission.json
-3. Submit the submission.json and team.txt to Gradescope
+```
+python3 solver.py
+python3 prepare_submission.py outputs/ submission.json
+Submit the submission.json and team.txt to Gradescope
+```
